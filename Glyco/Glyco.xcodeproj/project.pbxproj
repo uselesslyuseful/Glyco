@@ -7,24 +7,24 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		16E3EEEE2F1AB6160028DF28 /* Glyco.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Glyco.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		16E3EF0D2F1FFF0C0028DF28 /* Glyco.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Glyco.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		16E3EEFE2F1AB6170028DF28 /* Exceptions for "Glyco" folder in "Glyco" target */ = {
+		16E3EF1D2F1FFF0E0028DF28 /* Exceptions for "Glyco" folder in "Glyco" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 16E3EEED2F1AB6160028DF28 /* Glyco */;
+			target = 16E3EF0C2F1FFF0C0028DF28 /* Glyco */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		16E3EEF02F1AB6160028DF28 /* Glyco */ = {
+		16E3EF0F2F1FFF0C0028DF28 /* Glyco */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				16E3EEFE2F1AB6170028DF28 /* Exceptions for "Glyco" folder in "Glyco" target */,
+				16E3EF1D2F1FFF0E0028DF28 /* Exceptions for "Glyco" folder in "Glyco" target */,
 			);
 			path = Glyco;
 			sourceTree = "<group>";
@@ -32,7 +32,7 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		16E3EEEB2F1AB6160028DF28 /* Frameworks */ = {
+		16E3EF0A2F1FFF0C0028DF28 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -42,18 +42,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		16E3EEE52F1AB6160028DF28 = {
+		16E3EF042F1FFF0C0028DF28 = {
 			isa = PBXGroup;
 			children = (
-				16E3EEF02F1AB6160028DF28 /* Glyco */,
-				16E3EEEF2F1AB6160028DF28 /* Products */,
+				16E3EF0F2F1FFF0C0028DF28 /* Glyco */,
+				16E3EF0E2F1FFF0C0028DF28 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		16E3EEEF2F1AB6160028DF28 /* Products */ = {
+		16E3EF0E2F1FFF0C0028DF28 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				16E3EEEE2F1AB6160028DF28 /* Glyco.app */,
+				16E3EF0D2F1FFF0C0028DF28 /* Glyco.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -61,64 +61,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		16E3EEED2F1AB6160028DF28 /* Glyco */ = {
+		16E3EF0C2F1FFF0C0028DF28 /* Glyco */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 16E3EEFF2F1AB6170028DF28 /* Build configuration list for PBXNativeTarget "Glyco" */;
+			buildConfigurationList = 16E3EF1E2F1FFF0E0028DF28 /* Build configuration list for PBXNativeTarget "Glyco" */;
 			buildPhases = (
-				16E3EEEA2F1AB6160028DF28 /* Sources */,
-				16E3EEEB2F1AB6160028DF28 /* Frameworks */,
-				16E3EEEC2F1AB6160028DF28 /* Resources */,
+				16E3EF092F1FFF0C0028DF28 /* Sources */,
+				16E3EF0A2F1FFF0C0028DF28 /* Frameworks */,
+				16E3EF0B2F1FFF0C0028DF28 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				16E3EEF02F1AB6160028DF28 /* Glyco */,
+				16E3EF0F2F1FFF0C0028DF28 /* Glyco */,
 			);
 			name = Glyco;
 			packageProductDependencies = (
 			);
 			productName = Glyco;
-			productReference = 16E3EEEE2F1AB6160028DF28 /* Glyco.app */;
+			productReference = 16E3EF0D2F1FFF0C0028DF28 /* Glyco.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		16E3EEE62F1AB6160028DF28 /* Project object */ = {
+		16E3EF052F1FFF0C0028DF28 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
-					16E3EEED2F1AB6160028DF28 = {
+					16E3EF0C2F1FFF0C0028DF28 = {
 						CreatedOnToolsVersion = 26.2;
 					};
 				};
 			};
-			buildConfigurationList = 16E3EEE92F1AB6160028DF28 /* Build configuration list for PBXProject "Glyco" */;
+			buildConfigurationList = 16E3EF082F1FFF0C0028DF28 /* Build configuration list for PBXProject "Glyco" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 16E3EEE52F1AB6160028DF28;
+			mainGroup = 16E3EF042F1FFF0C0028DF28;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 16E3EEEF2F1AB6160028DF28 /* Products */;
+			productRefGroup = 16E3EF0E2F1FFF0C0028DF28 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				16E3EEED2F1AB6160028DF28 /* Glyco */,
+				16E3EF0C2F1FFF0C0028DF28 /* Glyco */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		16E3EEEC2F1AB6160028DF28 /* Resources */ = {
+		16E3EF0B2F1FFF0C0028DF28 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -128,7 +128,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		16E3EEEA2F1AB6160028DF28 /* Sources */ = {
+		16E3EF092F1FFF0C0028DF28 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -138,7 +138,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		16E3EF002F1AB6170028DF28 /* Debug */ = {
+		16E3EF1F2F1FFF0E0028DF28 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -183,7 +183,7 @@
 			};
 			name = Debug;
 		};
-		16E3EF012F1AB6170028DF28 /* Release */ = {
+		16E3EF202F1FFF0E0028DF28 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -228,7 +228,7 @@
 			};
 			name = Release;
 		};
-		16E3EF022F1AB6170028DF28 /* Debug */ = {
+		16E3EF212F1FFF0E0028DF28 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -290,7 +290,7 @@
 			};
 			name = Debug;
 		};
-		16E3EF032F1AB6170028DF28 /* Release */ = {
+		16E3EF222F1FFF0E0028DF28 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -347,25 +347,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		16E3EEE92F1AB6160028DF28 /* Build configuration list for PBXProject "Glyco" */ = {
+		16E3EF082F1FFF0C0028DF28 /* Build configuration list for PBXProject "Glyco" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				16E3EF022F1AB6170028DF28 /* Debug */,
-				16E3EF032F1AB6170028DF28 /* Release */,
+				16E3EF212F1FFF0E0028DF28 /* Debug */,
+				16E3EF222F1FFF0E0028DF28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		16E3EEFF2F1AB6170028DF28 /* Build configuration list for PBXNativeTarget "Glyco" */ = {
+		16E3EF1E2F1FFF0E0028DF28 /* Build configuration list for PBXNativeTarget "Glyco" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				16E3EF002F1AB6170028DF28 /* Debug */,
-				16E3EF012F1AB6170028DF28 /* Release */,
+				16E3EF1F2F1FFF0E0028DF28 /* Debug */,
+				16E3EF202F1FFF0E0028DF28 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 16E3EEE62F1AB6160028DF28 /* Project object */;
+	rootObject = 16E3EF052F1FFF0C0028DF28 /* Project object */;
 }

@@ -13,8 +13,25 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack{
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack{
+                        Text("Insights")
+                            .font(.headline)
+                        Spacer()
+                    }
+                        .border(Color.red)
+                        .padding(8)
                     
+                    LazyVGrid(
+                        columns: [GridItem(.flexible()), GridItem(.flexible())],
+                        alignment: .center,
+                        spacing: 10,
+                    ){
+                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
+                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
+                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
+                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
+                    }
                 }
             }
             .navigationTitle("Glucose Dashboard")
@@ -97,3 +114,46 @@ struct ContentView: View {
 //#Preview {
 //    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 //}
+
+struct Infocard: View {
+    let title: String
+    let value1: String
+    let value2: String?
+    let altValue: String?
+    let systemImage: String?
+
+    init(title: String = "Name", value1: String = "Value", value2: String? = nil, altValue: String? = nil, systemImage: String? = nil) {
+        self.title = title
+        self.value1 = value1
+        self.value2 = value2
+        self.altValue = altValue
+        self.systemImage = systemImage
+    }
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(title)
+                .font(.system(size: 12, weight: .regular))
+
+            Text(value1)
+                .font(.system(size: 24, weight: .semibold))
+
+            if let value2, !value2.isEmpty {
+                Text(value2)
+                    .font(.system(size: 32, weight: .semibold))
+            }
+
+            if let altValue, !altValue.isEmpty {
+                Text(altValue)
+                    .font(.system(size: 12, weight: .semibold))
+            }
+
+            Spacer()
+        }
+        .border(Color.red)
+        .padding(8)
+        .padding(8)
+        .frame(maxWidth: .infinity, minHeight: 110, alignment: .leading)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}

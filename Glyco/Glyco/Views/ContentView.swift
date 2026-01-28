@@ -19,7 +19,6 @@ struct ContentView: View {
                             .font(.headline)
                         Spacer()
                     }
-                        .border(Color.red)
                         .padding(8)
                     
                     LazyVGrid(
@@ -27,14 +26,14 @@ struct ContentView: View {
                         alignment: .center,
                         spacing: 10,
                     ){
-                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
-                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
-                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
-                        Infocard(title: "Name of Data", value1: "Val 1", value2: nil, altValue: "Alt Val", systemImage: "")
+                        Infocard(title: "Current", value1: "6 mmol/L", value2: nil, altValue: "108 mg/dL", systemImages: ["chart.bar.fill"])
+                        Infocard(title: "Average", value1: "8 mmol/L", value2: nil, altValue: "144 mg/dL", systemImages: ["chart.bar.fill"])
+                        Infocard(title: "Time in Range", value1: "89%", value2: nil, altValue: nil, systemImages: ["chart.bar.fill"])
+                        Infocard(title: "Time Out of Range", value1: "5%", value2: "6%", altValue: nil, systemImages: ["chart.bar.fill"])
                     }
                 }
             }
-            .navigationTitle("Glucose Dashboard")
+            .navigationTitle("Glyco Dashboard")
         }
             
     }
@@ -120,21 +119,27 @@ struct Infocard: View {
     let value1: String
     let value2: String?
     let altValue: String?
-    let systemImage: String?
-
-    init(title: String = "Name", value1: String = "Value", value2: String? = nil, altValue: String? = nil, systemImage: String? = nil) {
+    let systemImages: [String]?
+    
+    init(title: String = "Name", value1: String = "Value", value2: String? = nil, altValue: String? = nil, systemImages: [String]? = nil) {
         self.title = title
         self.value1 = value1
         self.value2 = value2
         self.altValue = altValue
-        self.systemImage = systemImage
+        self.systemImages = systemImages
     }
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(title)
-                .font(.system(size: 12, weight: .regular))
+            HStack{
+                if let systemImages, let first = systemImages.first, !first.isEmpty {
+                    Image(systemName: first).foregroundColor(.accentColor)
+                }
+                Text(title)
+                    .font(.system(size: 12, weight: .regular))
 
+            }
+            
             Text(value1)
                 .font(.system(size: 24, weight: .semibold))
 
@@ -150,10 +155,10 @@ struct Infocard: View {
 
             Spacer()
         }
-        .border(Color.red)
         .padding(8)
         .padding(8)
         .frame(maxWidth: .infinity, minHeight: 110, alignment: .leading)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }
+

@@ -26,11 +26,12 @@ struct ContentView: View {
                         alignment: .center,
                         spacing: 10,
                     ){
-                        Infocard(title: "Current", value1: "6 mmol/L", value2: nil, altValue: "108 mg/dL", systemImages: ["chart.bar.fill"])
+                        Infocard(title: "Current", value1: "6 mmol/L", value2: nil, altValue: "108 mg/dL", systemImages: ["chart.bar.fill", "", "arrow.up.circle.fill"])
                         Infocard(title: "Average", value1: "8 mmol/L", value2: nil, altValue: "144 mg/dL", systemImages: ["chart.bar.fill"])
                         Infocard(title: "Time in Range", value1: "89%", value2: nil, altValue: nil, systemImages: ["chart.bar.fill"])
-                        Infocard(title: "Time Out of Range", value1: "5%", value2: "6%", altValue: nil, systemImages: ["chart.bar.fill"])
+                        Infocard(title: "Time Out of Range", value1: "5%", value2: "6%", altValue: nil, systemImages: ["chart.bar.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }
+                    .padding(8)
                 }
             }
             .navigationTitle("Glyco Dashboard")
@@ -140,13 +141,37 @@ struct Infocard: View {
 
             }
             
-            Text(value1)
-                .font(.system(size: 24, weight: .semibold))
+            HStack{
+                if let systemImages, systemImages.indices.contains(1), !systemImages[1].isEmpty {
+                    Image(systemName: systemImages[1]).foregroundColor(.accentColor)
 
-            if let value2, !value2.isEmpty {
-                Text(value2)
-                    .font(.system(size: 32, weight: .semibold))
+                }
+
+                Text(value1)
+                    .font(.system(size: 24, weight: .semibold))
+                
+                if let systemImages, systemImages.indices.contains(2), !systemImages[2].isEmpty {
+                    Image(systemName: systemImages[2]).foregroundColor(.accentColor)
+
+                }
+
             }
+            
+            HStack{
+                if let systemImages, systemImages.indices.contains(3), !systemImages[3].isEmpty {
+                    Image(systemName: systemImages[3]).foregroundColor(.accentColor)
+
+                }
+                if let value2, !value2.isEmpty {
+                    Text(value2)
+                        .font(.system(size: 24, weight: .semibold))
+                }
+                if let systemImages, systemImages.indices.contains(4), !systemImages[4].isEmpty {
+                    Image(systemName: systemImages[4]).foregroundColor(.accentColor)
+
+                }
+            }
+            
 
             if let altValue, !altValue.isEmpty {
                 Text(altValue)

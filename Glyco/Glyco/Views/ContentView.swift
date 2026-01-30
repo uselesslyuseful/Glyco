@@ -7,21 +7,23 @@
 
 import SwiftUI
 import CoreData
-
+#Preview {
+    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+}
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    @State private var amount: Int = 1
-    @State private var unit: TimeUnit = .hours
+//    @State private var amount: Int = 1
+//    @State private var unit: TimeUnit = .hours
     @State private var insightRangeText = "1 Day"
     @State private var isShowingRangePicker = false
-
-    enum TimeUnit: String, CaseIterable {
-        case hours = "Hour"
-        case days = "Day"
-        case weeks = "Week"
-        case months = "Month"
-    }
+//
+//    enum TimeUnit: String, CaseIterable {
+//        case hours = "Hour"
+//        case days = "Day"
+//        case weeks = "Week"
+//        case months = "Month"
+//    }
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -76,7 +78,7 @@ struct ContentView: View {
                         .font(.headline)
                     Text("Like wheel picker something like when u make an alarm yk.")
                         .foregroundStyle(.secondary)
-
+                    TimePicker()
                     HStack(spacing: 16) {
                         Button("Cancel") { isShowingRangePicker = false }
                         Button("Done") { isShowingRangePicker = false }
@@ -84,7 +86,7 @@ struct ContentView: View {
                     }
                 }
                 .padding()
-                .presentationDetents([.fraction(0.35), .medium])
+                .presentationDetents([.fraction(0.45), .medium])
             }
         }
             
@@ -235,6 +237,29 @@ struct Infocard: View {
         .padding(8)
         .frame(maxWidth: .infinity, minHeight: 110, alignment: .leading)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+    }
+}
+
+struct TimePicker: View {
+    @State private var weeks: Int = 0
+    @State private var days: Int = 0
+    @State private var hours: Int = 0
+    var body: some View{
+        PickerViewWithoutIndicator(selection:$hours){
+            ForEach(0...24, id: \.self){ value in
+                Text("\(value)")
+            }
+        }
+    }
+}
+struct PickerViewWithoutIndicator<Content: View, Selection: Hashable>: View{
+    @Binding var selection: Selection
+    @ViewBuilder var content: Content
+    var body: some View{
+        Picker("", selection: $selection){
+            content
+        }
+        .pickerStyle(.wheel)
     }
 }
 

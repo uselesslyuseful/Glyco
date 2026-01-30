@@ -14,12 +14,14 @@ struct ContentView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
-                    HStack{
+                    HStack(spacing: 0){
                         Text("Insights")
                             .font(.headline)
                         Spacer()
                     }
-                        .padding(8)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        .padding(.bottom, 0)
                     
                     LazyVGrid(
                         columns: [GridItem(.flexible()), GridItem(.flexible())],
@@ -31,7 +33,9 @@ struct ContentView: View {
                         Infocard(title: "Time in Range", value1: "89%", value2: nil, altValue: nil, systemImages: ["chart.bar.fill"])
                         Infocard(title: "Time Out of Range", value1: "5%", value2: "6%", altValue: nil, systemImages: ["chart.bar.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }
-                    .padding(8)
+                    .padding(.top, 0)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
                 }
             }
             .navigationTitle("Glyco Dashboard")

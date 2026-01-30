@@ -11,45 +11,38 @@ import CoreData
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
-    @State var insightRangeText = "1 Week"
+    @State private var amount: Int = 1
+    @State private var unit: TimeUnit = .hours
+    @State private var insightRangeText = "1 Day"
+    @State private var isShowingRangePicker = false
+
+    enum TimeUnit: String, CaseIterable {
+        case hours = "Hour"
+        case days = "Day"
+        case weeks = "Week"
+        case months = "Month"
+    }
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
+                    // FIRST ROW (Title and time picker)
                     HStack(spacing: 0){
+                        // TITLE
                         Text("Insights")
                             .font(.headline)
-                        Menu{
-                            Button(action: {
-                                insightRangeText = "1 Day"
-                            }, label:{
-                                Text("1 Day")
-                            })
-                            Button(action: {
-                                insightRangeText = "1 Week"
-                            }, label:{
-                                Text("1 Week")
-                            })
-                            Button(action: {
-                                insightRangeText = "2 Weeks"
-                            }, label:{
-                                Text("2 Weeks")
-                            })
-                            Button(action: {
-                                insightRangeText = "1 Month"
-                            }, label:{
-                                Text("1 Month")
-                            })
-                            Button(action: {
-                                
-                            }, label:{
-                                Text("Custom Range")
-                            })
-                        } label: {
-                            Label(
-                                title: {Text(insightRangeText).foregroundStyle(.gray).font(.system(size: 12, weight: .semibold))},
-                                icon: {Image(systemName: "chevron.down").foregroundStyle(.gray)},
-                            )
+                        // BUTTON TO TOGGLE TIME RANGE
+                        Button(action: { isShowingRangePicker = true }) {
+                            HStack(spacing: 6) {
+                                Text(insightRangeText)
+                                    .foregroundStyle(.gray)
+                                    .font(.system(size: 12, weight: .semibold))
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                    .layoutPriority(1)
+                                Image(systemName: "chevron.down")
+                                    .foregroundStyle(.gray)
+                            }
                         }
                             .padding(.horizontal, 16)
                             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
@@ -59,6 +52,7 @@ struct ContentView: View {
                         .padding(.top, 12)
                         .padding(.bottom, 0)
                     
+                    // Main info
                     LazyVGrid(
                         columns: [GridItem(.flexible()), GridItem(.flexible())],
                         alignment: .center,
@@ -74,7 +68,24 @@ struct ContentView: View {
                     .padding(.bottom, 8)
                 }
             }
-            .navigationTitle("Glyco Dashboard")
+            .navigationTitle("Glyco Dashboard") // Title of the page
+            // TIME RANGE PICKER
+            .sheet(isPresented: $isShowingRangePicker) {
+                VStack(spacing: 24) {
+                    Text("Range Picker Placeholder")
+                        .font(.headline)
+                    Text("Like wheel picker something like when u make an alarm yk.")
+                        .foregroundStyle(.secondary)
+
+                    HStack(spacing: 16) {
+                        Button("Cancel") { isShowingRangePicker = false }
+                        Button("Done") { isShowingRangePicker = false }
+                            .buttonStyle(.borderedProminent)
+                    }
+                }
+                .padding()
+                .presentationDetents([.fraction(0.35), .medium])
+            }
         }
             
     }

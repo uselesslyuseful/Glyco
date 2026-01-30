@@ -10,6 +10,8 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    
+    @State var insightRangeText = "1 Week"
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -17,6 +19,40 @@ struct ContentView: View {
                     HStack(spacing: 0){
                         Text("Insights")
                             .font(.headline)
+                        Menu{
+                            Button(action: {
+                                insightRangeText = "1 Day"
+                            }, label:{
+                                Text("1 Day")
+                            })
+                            Button(action: {
+                                insightRangeText = "1 Week"
+                            }, label:{
+                                Text("1 Week")
+                            })
+                            Button(action: {
+                                insightRangeText = "2 Weeks"
+                            }, label:{
+                                Text("2 Weeks")
+                            })
+                            Button(action: {
+                                insightRangeText = "1 Month"
+                            }, label:{
+                                Text("1 Month")
+                            })
+                            Button(action: {
+                                
+                            }, label:{
+                                Text("Custom Range")
+                            })
+                        } label: {
+                            Label(
+                                title: {Text(insightRangeText).foregroundStyle(.gray).font(.system(size: 12, weight: .semibold))},
+                                icon: {Image(systemName: "chevron.down").foregroundStyle(.gray)},
+                            )
+                        }
+                            .padding(.horizontal, 16)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
                         Spacer()
                     }
                         .padding(.horizontal, 16)

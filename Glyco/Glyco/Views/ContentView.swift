@@ -7,9 +7,9 @@
 
 import SwiftUI
 import CoreData
-#Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-}
+//#Preview {
+//    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+//}
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -17,6 +17,10 @@ struct ContentView: View {
 //    @State private var unit: TimeUnit = .hours
     @State private var insightRangeText = "1 Day"
     @State private var isShowingRangePicker = false
+    
+    @State private var weeks: Int = 0
+    @State private var days: Int = 0
+    @State private var hours: Int = 0
 //
 //    enum TimeUnit: String, CaseIterable {
 //        case hours = "Hour"
@@ -78,7 +82,7 @@ struct ContentView: View {
                         .font(.headline)
                     Text("Like wheel picker something like when u make an alarm yk.")
                         .foregroundStyle(.secondary)
-                    TimePicker()
+                    TimePicker(weeks: $weeks, days: $days, hours: $hours)
                     HStack(spacing: 16) {
                         Button("Cancel") { isShowingRangePicker = false }
                         Button("Done") { isShowingRangePicker = false }
@@ -246,9 +250,9 @@ struct Infocard: View {
 
 struct TimePicker: View {
     var style: AnyShapeStyle = .init(.bar)
-    @Binding private var weeks: Int
-    @Binding private var days: Int
-    @Binding private var hours: Int
+    @Binding var weeks: Int
+    @Binding var days: Int
+    @Binding var hours: Int
     var body: some View{
         HStack(spacing: 0){
             CustomView("hours", 0...24, $hours)
@@ -292,8 +296,10 @@ struct PickerViewWithoutIndicator<Content: View, Selection: Hashable>: View{
                 RemovePickerIndicator {
                     isHidden = true
                 }
+            } else{
+                content
             }
-            content
+            
         }
         .pickerStyle(.wheel)
     }

@@ -78,14 +78,17 @@ struct ContentView: View {
             // TIME RANGE PICKER
             .sheet(isPresented: $isShowingRangePicker) {
                 VStack(spacing: 24) {
-                    Text("Range Picker Placeholder")
+                    Text("Time Range")
                         .font(.headline)
-                    Text("Like wheel picker something like when u make an alarm yk.")
+                    Text("Pick time range for the data below.")
                         .foregroundStyle(.secondary)
                     TimePicker(weeks: $weeks, days: $days, hours: $hours)
                     HStack(spacing: 16) {
                         Button("Cancel") { isShowingRangePicker = false }
-                        Button("Done") { isShowingRangePicker = false }
+                        Button("Done") {
+                            isShowingRangePicker = false
+                            insightRangeText = rangeToString(weeks: weeks, days: days, hours: hours)
+                        }
                             .buttonStyle(.borderedProminent)
                     }
                 }
@@ -94,6 +97,21 @@ struct ContentView: View {
             }
         }
             
+    }
+    
+    // Convert raw time range data to a string for UI display
+    private func rangeToString(weeks: Int, days: Int, hours: Int) -> String {
+        var parts: [String] = []
+        if weeks > 0 {
+            parts.append("\(weeks) week\(weeks == 1 ? "" : "s")")
+        }
+        if days > 0 {
+            parts.append("\(days) day\(days == 1 ? "" : "s")")
+        }
+        if hours > 0 {
+            parts.append("\(hours) hour\(hours == 1 ? "" : "s")")
+        }
+        return parts.joined(separator: ", ")
     }
         
 //    @FetchRequest(
@@ -335,3 +353,4 @@ extension UIView{
         return superview?.pickerView
     }
 }
+

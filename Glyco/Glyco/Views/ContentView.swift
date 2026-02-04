@@ -255,8 +255,8 @@ struct TimePicker: View {
     @Binding var hours: Int
     var body: some View{
         HStack(spacing: 0){
-            CustomView("hours", 0...24, $hours)
-            CustomView("days", 0...7, $days)
+            CustomView("hours", 0...23, $hours)
+            CustomView("days", 0...6, $days)
             CustomView("weeks", 0...4, $weeks)
         }
         .offset(x: -25)

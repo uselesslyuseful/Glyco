@@ -12,7 +12,8 @@ import CoreData
 //}
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+
+        
 //    @State private var amount: Int = 1
 //    @State private var unit: TimeUnit = .hours
     @State private var insightRangeText = "1 Day"
@@ -72,6 +73,9 @@ struct ContentView: View {
                     .padding(.top, 0)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 8)
+                    Button("Start Random Sampling") {
+                        startRandomSampling(with: viewContext)
+                    }
                 }
             }
             .navigationTitle("Glyco Dashboard") // Title of the page

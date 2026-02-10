@@ -3,26 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXFileReference section */
 		16E3EF0D2F1FFF0C0028DF28 /* Glyco.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Glyco.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		16E3EF1D2F1FFF0E0028DF28 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 16E3EF0C2F1FFF0C0028DF28 /* Glyco */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		16E3EF0F2F1FFF0C0028DF28 /* Glyco */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (16E3EF1D2F1FFF0E0028DF28 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Glyco; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		16E3EF0A2F1FFF0C0028DF28 /* Frameworks */ = {
@@ -38,7 +24,6 @@
 		16E3EF042F1FFF0C0028DF28 = {
 			isa = PBXGroup;
 			children = (
-				16E3EF0F2F1FFF0C0028DF28 /* Glyco */,
 				16E3EF0E2F1FFF0C0028DF28 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -65,9 +50,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				16E3EF0F2F1FFF0C0028DF28 /* Glyco */,
 			);
 			name = Glyco;
 			packageProductDependencies = (

@@ -11,6 +11,7 @@ import CoreData
 //    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 //}
 struct ContentView: View {
+    @StateObject private var vm = InsightsViewModel()
     @Environment(\.managedObjectContext) private var viewContext
 
         
@@ -65,8 +66,8 @@ struct ContentView: View {
                         alignment: .center,
                         spacing: 10,
                     ){
-                        Infocard(title: "Current", value1: "6 mmol/L", value2: nil, altValue: "108 mg/dL", systemImages: ["chart.bar.fill", "", "arrow.up.circle.fill"])
-                        Infocard(title: "Average", value1: "8 mmol/L", value2: nil, altValue: "144 mg/dL", systemImages: ["chart.bar.fill"])
+                        Infocard(title: "Current", value1: "6mmol/L", value2: nil, altValue: "108 mg/dL", systemImages: ["chart.bar.fill", "", "arrow.up.circle.fill"])
+                        Infocard(title: "Average", value1: "\(round(value: vm.average, toDecimalPlaces: 2))mmol/L", value2: nil, altValue: "\(round(value: vm.average*18, toDecimalPlaces: 2))mg/dL", systemImages: ["chart.bar.fill"])
                         Infocard(title: "Time in Range", value1: "89%", value2: nil, altValue: nil, systemImages: ["chart.bar.fill"])
                         Infocard(title: "Time Out of Range", value1: "5%", value2: "6%", altValue: nil, systemImages: ["chart.bar.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }
@@ -81,6 +82,7 @@ struct ContentView: View {
                         for g in glucose{
                             print(g.value)
                         }
+                        vm.loadStats(context: viewContext)
                     }
                     NavigationLink {
                         MeetingView()
@@ -252,7 +254,7 @@ struct Infocard: View {
                 }
 
                 Text(value1)
-                    .font(.system(size: 24, weight: .semibold))
+                    .font(.system(size: 20, weight: .semibold))
                 
                 if let systemImages, systemImages.indices.contains(2), !systemImages[2].isEmpty {
                     Image(systemName: systemImages[2]).foregroundColor(.accentColor)
@@ -268,7 +270,7 @@ struct Infocard: View {
                 }
                 if let value2, !value2.isEmpty {
                     Text(value2)
-                        .font(.system(size: 24, weight: .semibold))
+                        .font(.system(size: 20, weight: .semibold))
                 }
                 if let systemImages, systemImages.indices.contains(4), !systemImages[4].isEmpty {
                     Image(systemName: systemImages[4]).foregroundColor(.accentColor)
@@ -381,3 +383,9 @@ extension UIView{
     }
 }
 
+// MARK: Helper functions for math
+func round(value: Double, toDecimalPlaces places: Int) -> Double {
+    let multiplier = pow(10.0, Double(places))
+    let roundedValue = (value * multiplier).rounded() / multiplier
+    return roundedValue
+}

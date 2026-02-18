@@ -82,6 +82,22 @@ struct ContentView: View {
                             print(g.value)
                         }
                     }
+                    NavigationLink {
+                        MeetingView()
+                    } label: {
+                        HStack {
+                            Image(systemName: "waveform.path.ecg")
+                            Text("Dexcom Data")
+                                .fontWeight(.semibold)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.gray)
+                        }
+                        .padding()
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
 
                 }
             }

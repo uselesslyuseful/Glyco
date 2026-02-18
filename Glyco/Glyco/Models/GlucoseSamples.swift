@@ -47,3 +47,13 @@ func startRandomSampling(with context: NSManagedObjectContext) {
     addRandomSampleData(context: context)
 }
 
+func fetchGlucoseEntries(with context: NSManagedObjectContext) -> [GlucoseEntry] {
+    let request: NSFetchRequest<GlucoseEntry> = GlucoseEntry.fetchRequest()
+    do {
+        let glucose = try context.fetch(request)
+        return glucose
+    } catch {
+        print("Failed to fetch GlucoseEntries: \(error)")
+        return []
+    }
+}

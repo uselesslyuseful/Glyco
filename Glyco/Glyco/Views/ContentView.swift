@@ -76,6 +76,13 @@ struct ContentView: View {
                     Button("Start Random Sampling") {
                         startRandomSampling(with: viewContext)
                     }
+                    Button("Fetch Data") {
+                        let glucose = fetchGlucoseEntries(with: viewContext)
+                        for g in glucose{
+                            print(g.value)
+                        }
+                    }
+
                 }
             }
             .navigationTitle("Glyco Dashboard") // Title of the page

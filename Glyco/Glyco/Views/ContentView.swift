@@ -67,7 +67,7 @@ struct ContentView: View {
                         spacing: 10,
                     ){
                         Infocard(title: "Current", value1: "6mmol/L", value2: nil, altValue: "108 mg/dL", systemImages: ["chart.bar.fill", "", "arrow.up.circle.fill"])
-                        Infocard(title: "Average", value1: "\(round(value: vm.average, toDecimalPlaces: 2))mmol/L", value2: nil, altValue: "\(round(value: vm.average*18, toDecimalPlaces: 2))mg/dL", systemImages: ["chart.bar.fill"])
+                        Infocard(title: "Average", value1: "\(round(value: vm.average, toDecimalPlaces: 1))mmol/L", value2: nil, altValue: "\(round(value: vm.average*18, toDecimalPlaces: 1))mg/dL", systemImages: ["chart.bar.fill"])
                         Infocard(title: "Time in Range", value1: "89%", value2: nil, altValue: nil, systemImages: ["chart.bar.fill"])
                         Infocard(title: "Time Out of Range", value1: "5%", value2: "6%", altValue: nil, systemImages: ["chart.bar.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }

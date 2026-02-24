@@ -10,7 +10,8 @@ import Combine
 import CoreData
 
 class InsightsViewModel: ObservableObject {
-    @Published var average: Double = 0
+    @Published var averagemmol: Double = 0
+    @Published var averagemgdl: Double = 0
     @Published var percHigh: Double = 0
     @Published var percLow: Double = 0
     @Published var percIn: Double = 0
@@ -24,7 +25,10 @@ class InsightsViewModel: ObservableObject {
 
         let values = glucose.map { $0.value }
 
-        average = values.reduce(0, +) / Double(values.count) // calculate the sum of all numeric elements in an array/len(arr)
+        averagemmol = values.reduce(0, +) / Double(values.count) // calculate the sum of all numeric elements in an array/len(arr)
+        averagemgdl = round(value: averagemmol*18, toDecimalPlaces: 1)
+        averagemmol = round(value: averagemmol, toDecimalPlaces: 1)
+        
         
         var highCount = 0
         var lowCount = 0
@@ -36,7 +40,17 @@ class InsightsViewModel: ObservableObject {
             }
         }
         percHigh = Double(highCount)/Double(values.count) * 100
+        percHigh = round(value: percHigh, toDecimalPlaces: 1)
         percLow = Double(lowCount)/Double(values.count) * 100
+        percLow = round(value: percLow, toDecimalPlaces: 1)
         percIn = Double(lowCount+highCount)/Double(values.count) * 100
+        percIn = round(value: percIn, toDecimalPlaces: 1)
     }
+}
+
+// MARK: - Helper functions for math
+func round(value: Double, toDecimalPlaces places: Int) -> Double {
+    let multiplier = pow(10.0, Double(places))
+    let roundedValue = (value * multiplier).rounded() / multiplier
+    return roundedValue
 }

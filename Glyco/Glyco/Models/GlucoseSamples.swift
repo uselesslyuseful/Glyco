@@ -12,7 +12,7 @@ import CoreData
 // Even then in this case the data will be a lot more formatted -- it will clearly have ID, value, and date.
 // API might just give a string of integers that we need to split to extrapolate data. We assume it gives us the above line for now.
 
-
+// MARK: - Add Data
 func addEntry(glucoseValue: Double, dateEntered: Date, context: NSManagedObjectContext) {
     let entry = GlucoseEntry(context: context)
     entry.value = glucoseValue
@@ -28,6 +28,7 @@ func addEntry(glucoseValue: Double, dateEntered: Date, context: NSManagedObjectC
     }
 }
 
+// MARK: - Add Random Data
 func addRandomSampleData(context: NSManagedObjectContext){
     Task {
           while true {
@@ -43,10 +44,12 @@ func addRandomSampleData(context: NSManagedObjectContext){
       }
 }
 
+// MARK: - Start adding random data
 func startRandomSampling(with context: NSManagedObjectContext) {
     addRandomSampleData(context: context)
 }
 
+// MARK: - Fetch Data
 func fetchGlucoseEntries(with context: NSManagedObjectContext) -> [GlucoseEntry] {
     let request: NSFetchRequest<GlucoseEntry> = GlucoseEntry.fetchRequest()
     do {
@@ -55,5 +58,17 @@ func fetchGlucoseEntries(with context: NSManagedObjectContext) -> [GlucoseEntry]
     } catch {
         print("Failed to fetch GlucoseEntries: \(error)")
         return []
+    }
+}
+
+// MARK: - Delete Data
+func deleteAllGlucoseEntries(with context: NSManagedObjectContext) {
+    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "GlucoseEntry")
+    let batchDelete = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+    do {
+        try context.execute(batchDelete)
+        try context.save()
+    } catch {
+        print("Failed to delete all glucose entries: \(error)")
     }
 }

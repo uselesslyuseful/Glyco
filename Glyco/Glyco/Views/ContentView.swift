@@ -104,6 +104,9 @@ struct ContentView: View {
                         }
                         vm.loadStats(context: viewContext)
                     }
+                    Button("Clear Data") {
+                        deleteAllGlucoseEntries(with: viewContext)
+                    }
                     NavigationLink {
                         MeetingView()
                     } label: {

@@ -13,8 +13,9 @@ class InsightsViewModel: ObservableObject {
     @Published var average: Double = 0
     @Published var percHigh: Double = 0
     @Published var percLow: Double = 0
-    let highThreshold: Double = 10
-    let lowThreshold: Double = 3
+    @Published var percIn: Double = 0
+    let highThreshold: Double = 8
+    let lowThreshold: Double = 5
 
     func loadStats(context: NSManagedObjectContext) {
         let glucose = fetchGlucoseEntries(with: context)
@@ -34,6 +35,8 @@ class InsightsViewModel: ObservableObject {
                 lowCount += 1
             }
         }
-        percHigh =
+        percHigh = Double(highCount)/Double(values.count) * 100
+        percLow = Double(lowCount)/Double(values.count) * 100
+        percIn = Double(lowCount+highCount)/Double(values.count) * 100
     }
 }

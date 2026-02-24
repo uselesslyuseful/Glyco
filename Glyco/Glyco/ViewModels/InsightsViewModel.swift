@@ -54,3 +54,4 @@ func round(value: Double, toDecimalPlaces places: Int) -> Double {
     let roundedValue = (value * multiplier).rounded() / multiplier
     return roundedValue
 }
+// cant believe swift doesn't have a function to round to specific decimal places

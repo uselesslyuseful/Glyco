@@ -22,6 +22,7 @@ func addEntry(glucoseValue: Double, dateEntered: Date, context: NSManagedObjectC
         try context.save()
         print("GlucoseEntry saved")
         print("GlucoseEntry — Value: \(entry.value), Date: \(entry.date)")
+
     } catch {
         // Handle the error appropriately
         print("Failed to save GlucoseEntry: \(error)")
@@ -71,4 +72,28 @@ func deleteAllGlucoseEntries(with context: NSManagedObjectContext) {
     } catch {
         print("Failed to delete all glucose entries: \(error)")
     }
+}
+
+// MARK: - skibidi
+struct BloodGlucoseData: Identifiable, Equatable {
+    let hour: Int
+    
+    let level: Double
+    
+    var id: Int { hour }
+    
+    static var person1Examples: [BloodGlucoseData] {
+        [BloodGlucoseData(hour: 1, level: 2.4),
+         BloodGlucoseData(hour: 2, level: 3.3),
+         BloodGlucoseData(hour: 3, level: 12.9),
+         BloodGlucoseData(hour: 4, level: 4.5)]
+    }
+    
+    static var person2Examples: [BloodGlucoseData] {
+        [BloodGlucoseData(hour: 1, level: 2.5),
+         BloodGlucoseData(hour: 2, level: 5.3),
+         BloodGlucoseData(hour: 3, level: 4.5),
+         BloodGlucoseData(hour: 4, level: 3.5)]
+    }
+    
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreData
-import Charts
 
 
 //#Preview {
@@ -16,23 +15,23 @@ import Charts
 struct ContentView: View {
     @StateObject private var vm = InsightsViewModel()
     @Environment(\.managedObjectContext) private var viewContext
-
-        
-//    @State private var amount: Int = 1
-//    @State private var unit: TimeUnit = .hours
-    @State private var insightRangeText = "1 Day"
+    
+    
+    //    @State private var amount: Int = 1
+    //    @State private var unit: TimeUnit = .hours
+    @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
     @State private var isShowingRangePicker = false
     
     @State private var weeks: Int = 0
-    @State private var days: Int = 0
+    @State private var days: Int = 1 // DEFAULT VALUE HEREEEEEE
     @State private var hours: Int = 0
-//
-//    enum TimeUnit: String, CaseIterable {
-//        case hours = "Hour"
-//        case days = "Day"
-//        case weeks = "Week"
-//        case months = "Month"
-//    }
+    //
+    //    enum TimeUnit: String, CaseIterable {
+    //        case hours = "Hour"
+    //        case days = "Day"
+    //        case weeks = "Week"
+    //        case months = "Month"
+    //    }
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -55,13 +54,13 @@ struct ContentView: View {
                                     .foregroundStyle(.gray)
                             }
                         }
-                            .padding(.horizontal, 16)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                        .padding(.horizontal, 16)
+                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
                         Spacer()
                     }
-                        .padding(.horizontal, 16)
-                        .padding(.top, 12)
-                        .padding(.bottom, 0)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                    .padding(.bottom, 0)
                     
                     // Main info
                     LazyVGrid(
@@ -126,7 +125,7 @@ struct ContentView: View {
                     }
                     .padding(.horizontal, 16)
                     .padding(.bottom, 8)
-
+                    
                 }
                 SecondBloodGlucoseStatisticsView()
             }
@@ -143,108 +142,19 @@ struct ContentView: View {
                         Button("Cancel") { isShowingRangePicker = false }
                         Button("Done") {
                             isShowingRangePicker = false
-                            insightRangeText = rangeToString(weeks: weeks, days: days, hours: hours)
+                            insightRangeText = TimePicker.rangeToString(weeks: weeks, days: days, hours: hours)
                         }
-                            .buttonStyle(.borderedProminent)
+                        .buttonStyle(.borderedProminent)
                     }
                 }
                 .padding()
                 .presentationDetents([.fraction(0.45), .medium])
             }
         }
-            
+        
     }
     
-    // Convert raw time range data to a string for UI display
-    private func rangeToString(weeks: Int, days: Int, hours: Int) -> String {
-        var parts: [String] = []
-        if weeks > 0 {
-            parts.append("\(weeks) week\(weeks == 1 ? "" : "s")")
-        }
-        if days > 0 {
-            parts.append("\(days) day\(days == 1 ? "" : "s")")
-        }
-        if hours > 0 {
-            parts.append("\(hours) hour\(hours == 1 ? "" : "s")")
-        }
-        return parts.joined(separator: ", ")
-    }
-        
-//    @FetchRequest(
-//        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-//        animation: .default)
-//    private var items: FetchedResults<Item>
-//
-//    var body: some View {
-//        NavigationView {
-//            List {
-//                ForEach(items) { item in
-//                    NavigationLink {
-//                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-//                    } label: {
-//                        Text(item.timestamp!, formatter: itemFormatter)
-//                    }
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-//            .toolbar {
-//#if os(iOS)
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    EditButton()
-//                }
-//#endif
-//                ToolbarItem {
-//                    Button(action: addItem) {
-//                        Label("Add Item", systemImage: "plus")
-//                    }
-//                }
-//            }
-//            Text("Select an item")
-//        }
-//    }
-//
-//    private func addItem() {
-//        withAnimation {
-//            let newItem = Item(context: viewContext)
-//            newItem.timestamp = Date()
-//
-//            do {
-//                try viewContext.save()
-//            } catch {
-//                // Replace this implementation with code to handle the error appropriately.
-//                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//                let nsError = error as NSError
-//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//            }
-//        }
-//    }
-//
-//    private func deleteItems(offsets: IndexSet) {
-//        withAnimation {
-//            offsets.map { items[$0] }.forEach(viewContext.delete)
-//
-//            do {
-//                try viewContext.save()
-//            } catch {
-//                // Replace this implementation with code to handle the error appropriately.
-//                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-//                let nsError = error as NSError
-//                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-//            }
-//        }
-//    }
 }
-
-//private let itemFormatter: DateFormatter = {
-//    let formatter = DateFormatter()
-//    formatter.dateStyle = .short
-//    formatter.timeStyle = .medium
-//    return formatter
-//}()
-//
-//#Preview {
-//    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-//}
 
 
 // MARK: - Infocard
@@ -320,178 +230,3 @@ struct Infocard: View {
     }
 }
 
-// MARK: - Wheel picker
-
-struct TimePicker: View {
-    var style: AnyShapeStyle = .init(.bar)
-    @Binding var weeks: Int
-    @Binding var days: Int
-    @Binding var hours: Int
-    var body: some View{
-        HStack(spacing: 0){
-            CustomView("hours", 0...23, $hours)
-            CustomView("days", 0...6, $days)
-            CustomView("weeks", 0...4, $weeks)
-        }
-        .offset(x: -25)
-        .background{
-            RoundedRectangle(cornerRadius: 20)
-                .fill(style)
-                .frame(height:35)
-        }
-        
-    }
-    
-    @ViewBuilder
-    private func CustomView(_ title: String, _ range: ClosedRange<Int>, _ selection: Binding<Int>) -> some View {
-        PickerViewWithoutIndicator(selection:selection){
-            ForEach(range, id: \.self){ value in
-                Text("\(value)")
-                    .frame(width: 35, alignment: .trailing)
-                    .tag(value)
-            }
-        }
-        .overlay{
-            Text(title)
-                .font(.callout)
-                .frame(width: 50, alignment: .leading)
-                .lineLimit(1)
-                .offset(x: 50)
-        }
-    }
-}
-struct PickerViewWithoutIndicator<Content: View, Selection: Hashable>: View{
-    @Binding var selection: Selection
-    @ViewBuilder var content: Content
-    @State private var isHidden: Bool = false
-    var body: some View{
-        Picker("", selection: $selection){
-            if !isHidden {
-                RemovePickerIndicator {
-                    isHidden = true
-                }
-            } else{
-                content
-            }
-            
-        }
-        .pickerStyle(.wheel)
-    }
-}
-
-// Remove background
-fileprivate
-struct RemovePickerIndicator: UIViewRepresentable {
-    var result: () -> ()
-    func makeUIView(context: Context) -> UIView {
-        let view = UIView()
-        view.backgroundColor = .clear
-        DispatchQueue.main.async {
-            if let pickerView = view.pickerView{
-                if pickerView.subviews.count >= 2 {
-                    pickerView.subviews[1].backgroundColor = .clear
-                }
-                result()
-            }
-        }
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIView, context: Context) { }
-}
-
-fileprivate
-extension UIView{
-    var pickerView: UIPickerView? {
-        if let view = superview as? UIPickerView {
-            return view
-        }
-        return superview?.pickerView
-    }
-}
-
-
-// MARK: - Graph
-enum TimeRange: String, CaseIterable, Identifiable {
-    case threeHours = "3 Hours"
-    case sixHours = "6 Hours"
-    case twelveHours = "12 Hours"
-    case twentyFourHours = "24 Hours"
-    
-    var id: String { self.rawValue }
-}
-
-struct SecondBloodGlucoseStatisticsView: View {
-    
-    @State private var selectedRange: TimeRange = .threeHours
-    
-    let person1data = BloodGlucoseData.person1Examples
-    
-    var data: [(type: String, bloodglucoseData: [BloodGlucoseData])] {
-        [(type: "Person 1", bloodglucoseData: filteredPerson1)]
-    }
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            
-            HStack {
-                
-                // Add the blue icon with 3 bars here
-                
-                Text("Hourly Avg.")
-                        .font(.headline)
-                        .padding(.leading, 8)
-                
-                Picker("", selection: $selectedRange) {
-                    ForEach(TimeRange.allCases) { range in
-                        Text(range.rawValue)
-                            .tag(range)
-                    }
-                }
-                .pickerStyle(.menu)
-                .tint(.black)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 0)
-                .background(Color(.systemGray5))
-                .cornerRadius(30)
-            }
-            
-            Chart {
-                ForEach(data, id: \.type) { dataSeries in
-                    ForEach(dataSeries.bloodglucoseData) { point in
-                        LineMark(
-                            x: .value("Hour", point.hour),
-                            y: .value("Level", point.level)
-                        )
-                        .foregroundStyle(by: .value("Person", dataSeries.type))
-                        .symbol(by: .value("Person", dataSeries.type))
-                    }
-                }
-            }
-            .aspectRatio(1, contentMode: .fit)
-        }
-        .tint(.black)
-        .padding(.horizontal, 8)
-        .padding(.vertical, 10)
-        .background(Color(.systemGray6))
-        .cornerRadius(20)
-        .frame(width: 350)
-    }
-    
-    var filteredPerson1: [BloodGlucoseData] {
-        filter(data: person1data)
-    }
-    
-    func filter(data: [BloodGlucoseData]) -> [BloodGlucoseData] {
-        switch selectedRange {
-        case .threeHours:
-            return Array(data.prefix(3))
-        case .sixHours:
-            return Array(data.prefix(6))
-        case .twelveHours:
-            return Array(data.prefix(12))
-        case .twentyFourHours:
-            return data
-        }
-    }
-}

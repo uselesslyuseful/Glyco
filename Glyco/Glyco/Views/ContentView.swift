@@ -16,22 +16,13 @@ struct ContentView: View {
     @StateObject private var vm = InsightsViewModel()
     @Environment(\.managedObjectContext) private var viewContext
     
-    
-    //    @State private var amount: Int = 1
-    //    @State private var unit: TimeUnit = .hours
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
     @State private var isShowingRangePicker = false
     
     @State private var weeks: Int = 0
     @State private var days: Int = 1 // DEFAULT VALUE HEREEEEEE
     @State private var hours: Int = 0
-    //
-    //    enum TimeUnit: String, CaseIterable {
-    //        case hours = "Hour"
-    //        case days = "Day"
-    //        case weeks = "Week"
-    //        case months = "Month"
-    //    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {

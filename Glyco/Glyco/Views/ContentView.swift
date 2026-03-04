@@ -87,19 +87,7 @@ struct ContentView: View {
                     .padding(.top, 0)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 8)
-                    Button("Start Random Sampling") {
-                        startRandomSampling(with: viewContext)
-                    }
-                    Button("Fetch Data") {
-                        let glucose = fetchGlucoseEntries(with: viewContext)
-                        for g in glucose{
-                            print(g.value)
-                        }
-                        vm.loadStats(context: viewContext)
-                    }
-                    Button("Clear Data") {
-                        deleteAllGlucoseEntries(with: viewContext)
-                    }
+
                     NavigationLink {
                         MeetingView()
                     } label: {

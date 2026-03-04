@@ -29,27 +29,6 @@ func addEntry(glucoseValue: Double, dateEntered: Date, context: NSManagedObjectC
     }
 }
 
-// MARK: - Add Random Data
-func addRandomSampleData(context: NSManagedObjectContext){
-    Task {
-          while true {
-              await MainActor.run {
-                  addEntry(
-                      glucoseValue: Double.random(in: 4.0...9.0),
-                      dateEntered: Date().addingTimeInterval(Double.random(in: -10_000.0...0.0)),
-                      context: context
-                  )
-              }
-              try? await Task.sleep(nanoseconds: 1_000_000_000)
-          }
-      }
-}
-
-// MARK: - Start adding random data
-func startRandomSampling(with context: NSManagedObjectContext) {
-    addRandomSampleData(context: context)
-}
-
 // MARK: - Fetch Data
 func fetchGlucoseEntries(with context: NSManagedObjectContext) -> [GlucoseEntry] {
     let request: NSFetchRequest<GlucoseEntry> = GlucoseEntry.fetchRequest()

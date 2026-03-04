@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MeetingView: View {
     @EnvironmentObject var dexcom: DexcomClient
+    @Environment(\.managedObjectContext) private var viewContext
 
     var body: some View {
         VStack(spacing: 20) {
@@ -18,14 +19,15 @@ struct MeetingView: View {
                 Button("Fetch Glucose Data") {
                     Task {
                         await dexcom.fetchEGVs()
+                        dexcom.importEGVsIntoCoreData(context: viewContext)
                     }
                 }
 
-                List(dexcom.glucoseValues) { egv in
+                List(dexcom.glucoseValues, id: \.systemTime) { egv in
                     VStack(alignment: .leading) {
                         Text("\(egv.value) mg/dL")
                             .font(.headline)
-                        Text(egv.timestamp, style: .time)
+                        Text(egv.systemTime)
                             .font(.caption)
                     }
                 }

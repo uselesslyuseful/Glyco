@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import AuthenticationServices
 import UIKit
+import CoreData
 
 
 @MainActor
@@ -96,21 +97,79 @@ class DexcomClient: NSObject, ObservableObject {
     func fetchEGVs() async {
         guard let accessToken else { return }
 
-        let url = URL(string:
-            "https://sandbox-api.dexcom.com/v3/users/self/egvs?count=24"
-        )!
+        // ✅ last 24 hours
+        let endDate = dexcomDateString(from: Date())
+        let startDate = dexcomDateString(
+            from: Date().addingTimeInterval(-24 * 60 * 60)
+        )
+
+        let urlString =
+            "https://sandbox-api.dexcom.com/v3/users/self/egvs" +
+            "?startDate=\(startDate)" +
+            "&endDate=\(endDate)"
+
+        guard let url = URL(string: urlString) else { return }
 
         var request = URLRequest(url: url)
         request.setValue("Bearer \(accessToken)",
                          forHTTPHeaderField: "Authorization")
 
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let response = try JSONDecoder().decode(EGVResponse.self, from: data)
-            glucoseValues = response.records
+            let (data, response) = try await URLSession.shared.data(for: request)
+
+            print("STATUS:", (response as? HTTPURLResponse)?.statusCode ?? -1)
+            print(String(data: data, encoding: .utf8) ?? "no body")
+
+            let decoded = try JSONDecoder().decode(EGVResponse.self, from: data)
+
+            if let error = decoded.error {
+                print("Dexcom API error:", error, decoded.errorDescription ?? "")
+                return
+            }
+
+            glucoseValues = decoded.records ?? []
+
         } catch {
             print("EGV fetch error:", error)
         }
+    }
+    
+    func importEGVsIntoCoreData(context: NSManagedObjectContext) {
+        for egv in glucoseValues {
+
+            // Parse date safely
+            let date =
+                dexcomDateFormatter.date(from: egv.systemTime) ??
+                ISO8601DateFormatter().date(from: egv.systemTime) ??
+                Date()
+
+            // Convert to mmol
+            let mmol = mgdlToMmol(egv.value)
+
+            // Save using your existing pipeline
+            addEntry(
+                glucoseValue: mmol,
+                dateEntered: date,
+                context: context
+            )
+        }
+    }
+    
+    private let dexcomDateFormatter: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return f
+    }()
+
+    private func mgdlToMmol(_ value: Int) -> Double {
+        Double(value) / 18.0
+    }
+    
+    private func dexcomDateString(from date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        formatter.timeZone = TimeZone(secondsFromGMT: 0) // UTC required
+        return formatter.string(from: date)
     }
 }
 
@@ -122,3 +181,4 @@ extension DexcomClient: ASWebAuthenticationPresentationContextProviding {
         UIApplication.shared.windows.first!
     }
 }
+

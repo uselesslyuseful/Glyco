@@ -72,6 +72,7 @@ struct SecondBloodGlucoseStatisticsView: View {
             .chartYAxis {
                 AxisMarks(position: .leading)
             }
+            .chartXScale(domain: [100, 0]) //TODO: Specific value instead of 100
             
             .aspectRatio(1, contentMode: .fit)
         }

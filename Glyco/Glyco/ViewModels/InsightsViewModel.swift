@@ -10,11 +10,15 @@ import Combine
 import CoreData
 
 class InsightsViewModel: ObservableObject {
+    @Published var latestmmol: Double = 0
+    @Published var latestmgdl: Double = 0
     @Published var averagemmol: Double = 0
     @Published var averagemgdl: Double = 0
     @Published var percHigh: Double = 0
     @Published var percLow: Double = 0
     @Published var percIn: Double = 0
+    @Published var filteredList: [GlucoseEntry] = []
+    @Published var dateL: Date = Date() // TODO: figure out what this defaults to
     let highThreshold: Double = 8
     let lowThreshold: Double = 5
 
@@ -22,8 +26,15 @@ class InsightsViewModel: ObservableObject {
         let glucose = fetchGlucoseEntries(with: context)
 
         guard !glucose.isEmpty else { return }
-
-        let values = glucose.map { $0.value }
+        filteredList.removeAll()
+        for g in glucose{
+            if let entryDate = g.date{
+                if entryDate > dateL{
+                    filteredList.append(g)
+                }
+            }
+        }
+        let values = filteredList.map { $0.value }
 
         averagemmol = values.reduce(0, +) / Double(values.count) // calculate the sum of all numeric elements in an array/len(arr)
         averagemgdl = round(value: averagemmol*18, toDecimalPlaces: 1)
@@ -45,6 +56,12 @@ class InsightsViewModel: ObservableObject {
         percLow = round(value: percLow, toDecimalPlaces: 1)
         percIn = Double(lowCount+highCount)/Double(values.count) * 100
         percIn = round(value: percIn, toDecimalPlaces: 1)
+        
+        latestmmol = round(value: glucose[0].value, toDecimalPlaces: 1)
+        latestmgdl = round(value: glucose[0].value*18, toDecimalPlaces: 1)
+
+        
+        
     }
 }
 

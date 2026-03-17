@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct MeetingView: View {
-    @StateObject private var vm = InsightsViewModel()
+    @EnvironmentObject var vm: InsightsViewModel
     @EnvironmentObject var dexcom: DexcomClient
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -20,10 +20,14 @@ struct MeetingView: View {
                 Button("Fetch Glucose Data") {
                     Task {
                         await dexcom.fetchEGVs()
-                        dexcom.importEGVsIntoCoreData(context: viewContext)
+                        await dexcom.importEGVsIntoCoreData(context: viewContext)
+                        await MainActor.run {
+                            vm.loadStats(context: viewContext)
+                            
+                        }
+                        
                     }
-                    let glucose = fetchGlucoseEntries(with: viewContext)
-                    vm.loadStats(context: viewContext)
+
                 }
                 Button("Clear Data") {
                     deleteAllGlucoseEntries(with: viewContext)

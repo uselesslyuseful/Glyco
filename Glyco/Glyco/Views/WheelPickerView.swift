@@ -18,7 +18,7 @@ struct TimePicker: View {
         HStack(spacing: 0){
             CustomView("hours", 0...23, $hours)
             CustomView("days", 0...6, $days)
-            CustomView("weeks", 0...4, $weeks)
+            CustomView("weeks", 0...52, $weeks)
         }
         .offset(x: -25)
         .background{
@@ -48,6 +48,29 @@ struct TimePicker: View {
     }
     
 }
+
+struct WeeksInputView: View {
+    @Binding var weeks: Int
+    @State private var text: String = ""
+    var body: some View {
+        HStack(spacing: 8) {
+            Text("weeks")
+                .font(.callout)
+            TextField("weeks", text: $text)
+                .keyboardType(.numberPad)
+                .frame(width: 60)
+                .textFieldStyle(.roundedBorder)
+                .onChange(of: text) { newValue in
+                    let filtered = newValue.filter { $0.isNumber }
+                    if filtered != newValue { text = filtered }
+                    if let value = Int(filtered) {
+                        weeks = value
+                    }
+                }
+        }
+    }
+}
+
 struct PickerViewWithoutIndicator<Content: View, Selection: Hashable>: View{
     @Binding var selection: Selection
     @ViewBuilder var content: Content

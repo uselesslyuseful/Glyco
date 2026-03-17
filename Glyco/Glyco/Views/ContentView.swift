@@ -13,7 +13,7 @@ import CoreData
 //    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 //}
 struct ContentView: View {
-    @StateObject private var vm = InsightsViewModel()
+    @EnvironmentObject var vm: InsightsViewModel
     @Environment(\.managedObjectContext) private var viewContext
     
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
@@ -61,9 +61,9 @@ struct ContentView: View {
                     ){
                         Infocard(
                             title: "Current",
-                            value1: "6mmol/L",
+                            value1: "\(vm.latestmmol)mmol/L",
                             value2: nil,
-                            altValue: "108 mg/dL",
+                            altValue: "\(vm.latestmgdl)mmol/Lmg/dL",
                             systemImages: ["chart.bar.fill", "", "arrow.up.circle.fill"])
                         Infocard(
                             title: "Average",
@@ -117,11 +117,23 @@ struct ContentView: View {
                     Text("Pick time range for the data below.")
                         .foregroundStyle(.secondary)
                     TimePicker(weeks: $weeks, days: $days, hours: $hours)
+                    
+                    //Maybe instead?? (updates every time the wheel is moved kinda) prolly not
+//                    .onChange(of: vm.dateL) { _ in
+//                        vm.loadStats(context: viewContext)
+//                    }
+
                     HStack(spacing: 16) {
                         Button("Cancel") { isShowingRangePicker = false }
                         Button("Done") {
                             isShowingRangePicker = false
                             insightRangeText = TimePicker.rangeToString(weeks: weeks, days: days, hours: hours)
+                            let totalHours = (weeks * 7 + days) * 24 + hours
+                            let sinceDate = Calendar.current.date(byAdding: .hour, value: -totalHours, to: Date()) ?? Date()
+
+                            vm.dateL = sinceDate
+                            vm.loadStats(context: viewContext)
+
                         }
                         .buttonStyle(.borderedProminent)
                     }
@@ -132,7 +144,6 @@ struct ContentView: View {
         }
         
     }
-    
 }
 
 

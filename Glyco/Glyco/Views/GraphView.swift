@@ -59,12 +59,20 @@ struct SecondBloodGlucoseStatisticsView: View {
                         LineMark(
                             x: .value("Hour", point.hour),
                             y: .value("Level", point.level)
+                                
                         )
+                            
+                        }
                         .foregroundStyle(by: .value("Person", dataSeries.type))
                         .symbol(by: .value("Person", dataSeries.type))
                     }
                 }
+
+
+            .chartYAxis {
+                AxisMarks(position: .leading)
             }
+            
             .aspectRatio(1, contentMode: .fit)
         }
         .tint(.black)

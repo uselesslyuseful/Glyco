@@ -118,6 +118,7 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                     TimePicker(weeks: $weeks, days: $days, hours: $hours)
                     
+                    
                     //Maybe instead?? (updates every time the wheel is moved kinda) prolly not
 //                    .onChange(of: vm.dateL) { _ in
 //                        vm.loadStats(context: viewContext)

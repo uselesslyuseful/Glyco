@@ -18,6 +18,7 @@ struct ContentView: View {
     
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
     @State private var isShowingRangePicker = false
+    @State private var graphShowingRangePicker = false
     
     @State private var weeks: Int = 0
     @State private var days: Int = 1 // DEFAULT VALUE HEREEEEEE

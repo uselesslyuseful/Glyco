@@ -19,8 +19,8 @@ class InsightsViewModel: ObservableObject {
     @Published var percIn: Double = 0
     @Published var filteredList: [GlucoseEntry] = []
     @Published var dateL: Date = Date() // TODO: figure out what this defaults to
-    let highThreshold: Double = 8
-    let lowThreshold: Double = 5
+    let highThreshold: Double = 10
+    let lowThreshold: Double = 3.9
 
     func loadStats(context: NSManagedObjectContext) {
         let glucose = fetchGlucoseEntries(with: context)
@@ -54,7 +54,7 @@ class InsightsViewModel: ObservableObject {
         percHigh = round(value: percHigh, toDecimalPlaces: 1)
         percLow = Double(lowCount)/Double(values.count) * 100
         percLow = round(value: percLow, toDecimalPlaces: 1)
-        percIn = Double(lowCount+highCount)/Double(values.count) * 100
+        percIn = Double(values.count-(lowCount+highCount))/Double(values.count) * 100
         percIn = round(value: percIn, toDecimalPlaces: 1)
         
         latestmmol = round(value: glucose[0].value, toDecimalPlaces: 1)

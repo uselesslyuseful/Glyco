@@ -18,7 +18,7 @@ class InsightsViewModel: ObservableObject {
     @Published var percLow: Double = 0
     @Published var percIn: Double = 0
     @Published var filteredList: [GlucoseEntry] = []
-    @Published var dateL: Date = Date() // TODO: figure out what this defaults to
+    @Published var dateL: Date = Date().addingTimeInterval(-24*60*60)
     let highThreshold: Double = 10
     let lowThreshold: Double = 3.9
 

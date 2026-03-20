@@ -13,6 +13,7 @@ struct GlycoApp: App {
     let persistenceController = PersistenceController.shared
     @StateObject private var dexcom = DexcomClient()
     @StateObject private var insightsVM = InsightsViewModel()
+    @StateObject private var graphVM = GraphViewModel()
 
     var body: some Scene {
         WindowGroup {
@@ -20,6 +21,8 @@ struct GlycoApp: App {
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(dexcom)
                 .environmentObject(insightsVM)
+                .environmentObject(graphVM)
+
         }
 
     }

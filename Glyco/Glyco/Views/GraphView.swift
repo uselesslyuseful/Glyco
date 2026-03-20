@@ -9,24 +9,16 @@ import SwiftUI
 import CoreData
 import Charts
 // MARK: - Graph
-enum TimeRange: String, CaseIterable, Identifiable {
-    case threeHours = "3 Hours"
-    case sixHours = "6 Hours"
-    case twelveHours = "12 Hours"
-    case twentyFourHours = "24 Hours"
-    
-    var id: String { self.rawValue }
-}
-
 struct SecondBloodGlucoseStatisticsView: View {
+    @EnvironmentObject var vm: GraphViewModel
+    @Environment(\.managedObjectContext) private var viewContext
+
+    @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
+    @State private var isShowingRangePicker = false
     
-    @State private var selectedRange: TimeRange = .threeHours
-    
-    let person1data = BloodGlucoseData.person1Examples
-    
-    var data: [(type: String, bloodglucoseData: [BloodGlucoseData])] {
-        [(type: "Person 1", bloodglucoseData: filteredPerson1)]
-    }
+    @State private var minutes: Int = 0
+    @State private var hours: Int = 1 // DEFAULT VALUE HEREEEEEE
+    @State private var days: Int = 0
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -35,26 +27,28 @@ struct SecondBloodGlucoseStatisticsView: View {
                 
                 // Add the blue icon with 3 bars here
                 
-                Text("Hourly Avg.")
+                Text("Glucose Levels.")
                         .font(.headline)
                         .padding(.leading, 8)
                 
-                Picker("", selection: $selectedRange) {
-                    ForEach(TimeRange.allCases) { range in
-                        Text(range.rawValue)
-                            .tag(range)
+                Button(action: { isShowingRangePicker = true }) {
+                    HStack(spacing: 6) {
+                        Text(insightRangeText)
+                            .foregroundStyle(.gray)
+                            .font(.system(size: 12, weight: .semibold))
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .layoutPriority(1)
+                        Image(systemName: "chevron.down")
+                            .foregroundStyle(.gray)
                     }
                 }
-                .pickerStyle(.menu)
-                .tint(.black)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 0)
-                .background(Color(.systemGray5))
-                .cornerRadius(30)
-            }
+                .padding(.horizontal, 16)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                Spacer()            }
             
             Chart {
-                ForEach(data, id: \.type) { dataSeries in
+                ForEach(vm.filteredList, id: \.type) { dataSeries in
                     ForEach(dataSeries.bloodglucoseData) { point in
                         LineMark(
                             x: .value("Hour", point.hour),
@@ -82,22 +76,39 @@ struct SecondBloodGlucoseStatisticsView: View {
         .background(Color(.systemGray6))
         .cornerRadius(20)
         .frame(width: 350)
-    }
-    
-    var filteredPerson1: [BloodGlucoseData] {
-        filter(data: person1data)
-    }
-    
-    func filter(data: [BloodGlucoseData]) -> [BloodGlucoseData] {
-        switch selectedRange {
-        case .threeHours:
-            return Array(data.prefix(3))
-        case .sixHours:
-            return Array(data.prefix(6))
-        case .twelveHours:
-            return Array(data.prefix(12))
-        case .twentyFourHours:
-            return data
+        .sheet(isPresented: $isShowingRangePicker) {
+            VStack(spacing: 24) {
+                Text("Time Range")
+                    .font(.headline)
+                Text("Pick time range for the data below.")
+                    .foregroundStyle(.secondary)
+                TimePicker(minutes: $minutes, hours: $hours, days: $days)
+                
+                
+                //Maybe instead?? (updates every time the wheel is moved kinda) prolly not
+//                    .onChange(of: vm.dateL) { _ in
+//                        vm.loadStats(context: viewContext)
+//                    }
+
+                HStack(spacing: 16) {
+                    Button("Cancel") { isShowingRangePicker = false }
+                    Button("Apply") {
+                        isShowingRangePicker = false
+                        insightRangeText = TimePicker.rangeToString(minutes: minutes, hours: hours, days: days)
+                        let totalMinutes = minutes + (hours * 60) + (days * 24 * 60)
+                        let sinceDate = Calendar.current.date(byAdding: .minute, value: -totalMinutes, to: Date()) ?? Date()
+
+                        vm.dateL = sinceDate
+                        vm.loadStats(context: viewContext)
+
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
+            .padding()
+            .presentationDetents([.fraction(0.45), .medium])
         }
     }
+    
 }
+

@@ -18,7 +18,6 @@ struct ContentView: View {
     
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
     @State private var isShowingRangePicker = false
-    @State private var graphShowingRangePicker = false
     
     @State private var weeks: Int = 0
     @State private var days: Int = 1 // DEFAULT VALUE HEREEEEEE
@@ -127,7 +126,7 @@ struct ContentView: View {
 
                     HStack(spacing: 16) {
                         Button("Cancel") { isShowingRangePicker = false }
-                        Button("Done") {
+                        Button("Apply") {
                             isShowingRangePicker = false
                             insightRangeText = TimePicker.rangeToString(weeks: weeks, days: days, hours: hours)
                             let totalHours = (weeks * 7 + days) * 24 + hours

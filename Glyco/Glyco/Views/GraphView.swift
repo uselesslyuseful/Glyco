@@ -27,9 +27,9 @@ struct SecondBloodGlucoseStatisticsView: View {
                 
                 // Add the blue icon with 3 bars here
                 
-                Text("Glucose Levels.")
-                        .font(.headline)
-                        .padding(.leading, 8)
+                Text("Glucose Levels")
+                    .font(.headline)
+                    .padding(.leading, 8)
                 
                 Button(action: { isShowingRangePicker = true }) {
                     HStack(spacing: 6) {
@@ -45,30 +45,9 @@ struct SecondBloodGlucoseStatisticsView: View {
                 }
                 .padding(.horizontal, 16)
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-                Spacer()            }
-            
-            Chart {
-                ForEach(vm.filteredList, id: \.type) { dataSeries in
-                    ForEach(dataSeries.bloodglucoseData) { point in
-                        LineMark(
-                            x: .value("Hour", point.hour),
-                            y: .value("Level", point.level)
-                                
-                        )
-                            
-                        }
-                        .foregroundStyle(by: .value("Person", dataSeries.type))
-                        .symbol(by: .value("Person", dataSeries.type))
-                    }
-                }
-
-
-            .chartYAxis {
-                AxisMarks(position: .leading)
+                Spacer()
             }
-            .chartXScale(domain: [100, 0]) //TODO: Specific value instead of 100
-            
-            .aspectRatio(1, contentMode: .fit)
+            Graph()
         }
         .tint(.black)
         .padding(.horizontal, 8)
@@ -110,5 +89,56 @@ struct SecondBloodGlucoseStatisticsView: View {
         }
     }
     
+}
+
+
+struct Graph: View {
+    @EnvironmentObject var vm: GraphViewModel
+    
+    var body: some View {
+        Chart {
+            ForEach(vm.filteredList, id: \.self) { entry in
+                LineMark(
+                    x: .value("Time", entry.date ?? Date()),
+                    y: .value("Level", entry.value)
+                )
+            }
+        }
+        .chartYAxis {
+            AxisMarks(position: .leading)
+        }
+        .chartXAxis {
+            AxisMarks(values: .automatic) { value in
+                AxisGridLine()
+                AxisValueLabel {
+                    if let date = value.as(Date.self) {
+                        Text(relativeLabel(for: date))
+                            .font(.system(size: 10))
+                    }
+                }
+            }
+        }
+        .aspectRatio(1, contentMode: .fit)
+    }
+    
+    private func relativeLabel(for date: Date) -> String {
+        let diff = Int(Date().timeIntervalSince(date))
+        if diff < 60 { // 1 min or 5 mins?
+            return "now"
+        } else if diff < 3600 { // <60 mins
+            return "\(diff / 60)m ago"
+        } else if diff % 3600 == 0 {  // hours only
+            return "\(diff / 3600)h ago"
+        } else if diff < 86400{ // <1 day
+            let h = diff / 3600
+            let m = (diff % 3600) / 60
+            return "\(h)h\(m)m ago"
+        } else{
+            let d = diff / 86400
+            let h = (diff % 86400) / 3600
+            let m = (diff % 3600) / 60
+            return "\(d)d\(h)h\(m)m ago"
+        }
+    }
 }
 

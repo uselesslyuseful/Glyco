@@ -97,10 +97,9 @@ class DexcomClient: NSObject, ObservableObject {
     func fetchEGVs() async {
         guard let accessToken else { return }
 
-        // ✅ last 24 hours
         let endDate = dexcomDateString(from: Date())
         let startDate = dexcomDateString(
-            from: Date().addingTimeInterval(-30 * 24 * 60 * 60) // legit just max range on wheelpicker
+            from: Date().addingTimeInterval(-14 * 24 * 60 * 60) // legit just max range on wheelpicker
         )
 
         let urlString =

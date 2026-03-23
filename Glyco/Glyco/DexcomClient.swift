@@ -134,21 +134,43 @@ class DexcomClient: NSObject, ObservableObject {
     }
     
     func importEGVsIntoCoreData(context: NSManagedObjectContext) {
-        for egv in glucoseValues {
+        // MARK: - Temporary fix to shift all data from dexcom sandbox to now, since sandbox is having issues
+        guard !glucoseValues.isEmpty else { return }
 
-            // Parse date safely
+        deleteAllGlucoseEntries(with: context)
+
+        let latestRecordDate = glucoseValues.compactMap {
+            dexcomDateFormatter.date(from: $0.systemTime) ??
+            ISO8601DateFormatter().date(from: $0.systemTime)
+        }.max() ?? Date()
+
+        let offset = Date().timeIntervalSince(latestRecordDate)
+        print("Shifting dates by \(offset / 3600) hours")
+        
+        // MARK: - End of temp fix section
+        for egv in glucoseValues {
+            
+
+            
             let date =
                 dexcomDateFormatter.date(from: egv.systemTime) ??
                 ISO8601DateFormatter().date(from: egv.systemTime) ??
                 Date()
-
+            
+            // MARK: - Start of temp fix
+            let shiftedDate = date.addingTimeInterval(offset)
+            // MARK: - End of temp fix
+            
             // Convert to mmol
             let mmol = mgdlToMmol(egv.value)
 
             // Save using your existing pipeline
             addEntry(
                 glucoseValue: mmol,
-                dateEntered: date,
+//                dateEntered: date,
+                // MARK: - Start of temp fix
+                dateEntered: shiftedDate,
+                // MARK: - End of temp fix
                 context: context
             )
         }

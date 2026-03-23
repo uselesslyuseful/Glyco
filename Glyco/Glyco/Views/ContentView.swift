@@ -13,7 +13,7 @@ import CoreData
 //    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 //}
 struct ContentView: View {
-    @EnvironmentObject var vm: InsightsViewModel
+    @EnvironmentObject var ivm: InsightsViewModel
     @Environment(\.managedObjectContext) private var viewContext
     
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
@@ -49,7 +49,6 @@ struct ContentView: View {
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
                         Spacer()
                     }
-                    .padding(.horizontal, 16)
                     .padding(.top, 12)
                     .padding(.bottom, 0)
                     
@@ -61,55 +60,64 @@ struct ContentView: View {
                     ){
                         Infocard(
                             title: "Current",
-                            value1: "\(vm.latestmmol)mmol/L",
+                            value1: "\(ivm.latestmmol)mmol/L",
                             value2: nil,
-                            altValue: "\(vm.latestmgdl)mmol/Lmg/dL",
+                            altValue: "\(ivm.latestmgdl)mmol/Lmg/dL",
                             systemImages: ["chart.bar.fill", "", "arrow.up.circle.fill"])
                         Infocard(
                             title: "Average",
-                            value1: "\(vm.averagemmol)mmol/L",
+                            value1: "\(ivm.averagemmol)mmol/L",
                             value2: nil,
-                            altValue: "\(vm.averagemgdl)mg/dL",
+                            altValue: "\(ivm.averagemgdl)mg/dL",
                             systemImages: ["chart.bar.fill"])
                         Infocard(
                             title: "Time in Range",
-                            value1: "\(vm.percIn)%",
+                            value1: "\(ivm.percIn)%",
                             value2: nil,
                             altValue: nil,
                             systemImages: ["chart.bar.fill"])
                         Infocard(
                             title: "Time Out of Range",
-                            value1: "\(vm.percHigh)%",
-                            value2: "\(vm.percLow)%",
+                            value1: "\(ivm.percHigh)%",
+                            value2: "\(ivm.percLow)%",
                             altValue: nil,
                             systemImages: ["chart.bar.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }
                     .padding(.top, 0)
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, 0)
                     .padding(.bottom, 8)
 
-                    NavigationLink {
-                        MeetingView()
-                    } label: {
-                        HStack {
-                            Image(systemName: "waveform.path.ecg")
-                            Text("Dexcom Data")
-                                .fontWeight(.semibold)
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundColor(.gray)
-                        }
-                        .padding()
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 8)
-                    
+                                        
                 }
+                .frame(width: UIScreen.main.bounds.width * 0.95)
+                
                 SecondBloodGlucoseStatisticsView()
+                    .frame(width: UIScreen.main.bounds.width * 0.95)
+                
+                NavigationLink {
+                    MeetingView()
+                } label: {
+                    HStack {
+                        Image(systemName: "waveform.path.ecg")
+                        Text("Dexcom Data")
+                            .fontWeight(.semibold)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.gray)
+                    }
+                    .padding()
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+                }
+                .frame(width: UIScreen.main.bounds.width * 0.95)
+                .padding(.bottom, 8)
+
             }
             .navigationTitle("Glyco Dashboard") // Title of the page
             // TIME RANGE PICKER
+            .onAppear {
+                ivm.loadStats(context: viewContext)
+                print("wt")
+            }
             .sheet(isPresented: $isShowingRangePicker) {
                 VStack(spacing: 24) {
                     Text("Time Range")
@@ -120,8 +128,8 @@ struct ContentView: View {
                     
                     
                     //Maybe instead?? (updates every time the wheel is moved kinda) prolly not
-//                    .onChange(of: vm.dateL) { _ in
-//                        vm.loadStats(context: viewContext)
+//                    .onChange(of: ivm.dateL) { _ in
+//                        ivm.loadStats(context: viewContext)
 //                    }
 
                     HStack(spacing: 16) {
@@ -132,8 +140,8 @@ struct ContentView: View {
                             let totalHours = (weeks * 7 + days) * 24 + hours
                             let sinceDate = Calendar.current.date(byAdding: .hour, value: -totalHours, to: Date()) ?? Date()
 
-                            vm.dateL = sinceDate
-                            vm.loadStats(context: viewContext)
+                            ivm.dateL = sinceDate
+                            ivm.loadStats(context: viewContext)
 
                         }
                         .buttonStyle(.borderedProminent)
@@ -141,6 +149,7 @@ struct ContentView: View {
                 }
                 .padding()
                 .presentationDetents([.fraction(0.45), .medium])
+                
             }
         }
         

@@ -10,15 +10,15 @@ import CoreData
 import Charts
 // MARK: - Graph
 struct SecondBloodGlucoseStatisticsView: View {
-    @EnvironmentObject var vm: GraphViewModel
+    @EnvironmentObject var gvm: GraphViewModel
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
     @State private var isShowingRangePicker = false
     
     @State private var minutes: Int = 0
-    @State private var hours: Int = 1 // DEFAULT VALUE HEREEEEEE
-    @State private var days: Int = 0
+    @State private var hours: Int = 0 // DEFAULT VALUE HEREEEEEE
+    @State private var days: Int = 1
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -48,13 +48,18 @@ struct SecondBloodGlucoseStatisticsView: View {
                 Spacer()
             }
             Graph()
+            
+
         }
         .tint(.black)
         .padding(.horizontal, 8)
         .padding(.vertical, 10)
         .background(Color(.systemGray6))
         .cornerRadius(20)
-        .frame(width: 350)
+        .frame(width: UIScreen.main.bounds.width * 0.95)
+        .onAppear {
+            gvm.loadStats(context: viewContext)
+        }
         .sheet(isPresented: $isShowingRangePicker) {
             VStack(spacing: 24) {
                 Text("Time Range")
@@ -65,8 +70,8 @@ struct SecondBloodGlucoseStatisticsView: View {
                 
                 
                 //Maybe instead?? (updates every time the wheel is moved kinda) prolly not
-//                    .onChange(of: vm.dateL) { _ in
-//                        vm.loadStats(context: viewContext)
+//                    .onChange(of: gvm.dateL) { _ in
+//                        gvm.loadStats(context: viewContext)
 //                    }
 
                 HStack(spacing: 16) {
@@ -77,8 +82,8 @@ struct SecondBloodGlucoseStatisticsView: View {
                         let totalMinutes = minutes + (hours * 60) + (days * 24 * 60)
                         let sinceDate = Calendar.current.date(byAdding: .minute, value: -totalMinutes, to: Date()) ?? Date()
 
-                        vm.dateL = sinceDate
-                        vm.loadStats(context: viewContext)
+                        gvm.dateL = sinceDate
+                        gvm.loadStats(context: viewContext)
 
                     }
                     .buttonStyle(.borderedProminent)
@@ -86,18 +91,28 @@ struct SecondBloodGlucoseStatisticsView: View {
             }
             .padding()
             .presentationDetents([.fraction(0.45), .medium])
+            
         }
+        Infobar(
+            title: "Trend",
+            value1: "Rising Fast",
+            value2: "+0.8",
+            altValue: "mmol/min",
+            systemImages: ["arrow.up.forward.circle.fill", "arrow.up.forward"],
+            accentColor: .red
+        )
+        .frame(width: UIScreen.main.bounds.width * 0.95)
     }
     
 }
 
 
 struct Graph: View {
-    @EnvironmentObject var vm: GraphViewModel
+    @EnvironmentObject var gvm: GraphViewModel
     
     var body: some View {
         Chart {
-            ForEach(vm.filteredList, id: \.self) { entry in
+            ForEach(gvm.filteredList, id: \.self) { entry in
                 LineMark(
                     x: .value("Time", entry.date ?? Date()),
                     y: .value("Level", entry.value)
@@ -123,7 +138,7 @@ struct Graph: View {
     
     private func relativeLabel(for date: Date) -> String {
         let diff = Int(Date().timeIntervalSince(date))
-        if diff < 60 { // 1 min or 5 mins?
+        if diff < 60*5 { // 1 min or 5 mins?
             return "now"
         } else if diff < 3600 { // <60 mins
             return "\(diff / 60)m ago"
@@ -139,6 +154,72 @@ struct Graph: View {
             let m = (diff % 3600) / 60
             return "\(d)d\(h)h\(m)m ago"
         }
+    }
+}
+
+struct Infobar: View {
+    let title: String
+    let value1: String
+    let value2: String?
+    let altValue: String?
+    let systemImages: [String]?
+    let accentColor: Color
+
+    init(title: String = "Name", value1: String = "Value", value2: String? = nil, altValue: String? = nil, systemImages: [String]? = nil, accentColor: Color = .accentColor) {
+        self.title = title
+        self.value1 = value1
+        self.value2 = value2
+        self.altValue = altValue
+        self.systemImages = systemImages
+        self.accentColor = accentColor
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+
+            if let systemImages, let first = systemImages.first, !first.isEmpty {
+                Image(systemName: first)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(accentColor)
+                    .frame(width: 28, height: 28)
+                    .background(accentColor.opacity(0.12), in: Circle())
+            }
+
+            Text(title)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(.secondary)
+
+            Spacer()
+
+            HStack(spacing: 6) {
+                if let altValue {
+                    Text(altValue)
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundColor(.secondary)
+                }
+                if let value2 {
+                    Text(value2)
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundColor(.secondary)
+                }
+                Text(value1)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundColor(accentColor)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 4)
+                    .background(accentColor.opacity(0.12), in: Capsule())
+                
+                if let systemImages, systemImages.indices.contains(1), !systemImages[1].isEmpty {
+                    Image(systemName: systemImages[1])
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(accentColor)
+                }
+            }
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, minHeight: 50)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }
 

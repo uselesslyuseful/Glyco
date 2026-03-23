@@ -23,14 +23,19 @@ struct MeetingView: View {
                         await dexcom.importEGVsIntoCoreData(context: viewContext)
                         await MainActor.run {
                             vm.loadStats(context: viewContext)
-                            
                         }
                         
                     }
 
                 }
                 Button("Clear Data") {
-                    deleteAllGlucoseEntries(with: viewContext)
+                    Task{
+                        await deleteAllGlucoseEntries(with: viewContext)
+                        await MainActor.run{
+                            vm.loadStats(context: viewContext)
+                        }
+                    } // TODO: adoinalwd
+                    
                 }
 
                 List(dexcom.glucoseValues, id: \.systemTime) { egv in
@@ -53,3 +58,4 @@ struct MeetingView: View {
         .navigationTitle("Dexcom")
     }
 }
+

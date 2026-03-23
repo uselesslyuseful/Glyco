@@ -48,6 +48,7 @@ func deleteAllGlucoseEntries(with context: NSManagedObjectContext) {
     do {
         try context.execute(batchDelete)
         try context.save()
+        print("Glucose entries are empty")
     } catch {
         print("Failed to delete all glucose entries: \(error)")
     }

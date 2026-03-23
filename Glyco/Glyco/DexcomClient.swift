@@ -99,7 +99,7 @@ class DexcomClient: NSObject, ObservableObject {
 
         let endDate = dexcomDateString(from: Date())
         let startDate = dexcomDateString(
-            from: Date().addingTimeInterval(-14 * 24 * 60 * 60) // legit just max range on wheelpicker
+            from: Date().addingTimeInterval(-14 * 24 * 60 * 60) // 2 weeks for now
         )
 
         let urlString =

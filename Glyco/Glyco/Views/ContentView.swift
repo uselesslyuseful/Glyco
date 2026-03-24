@@ -14,6 +14,8 @@ import CoreData
 //}
 struct ContentView: View {
     @EnvironmentObject var ivm: InsightsViewModel
+    @EnvironmentObject var gvm: GraphViewModel
+
     @Environment(\.managedObjectContext) private var viewContext
     
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
@@ -110,13 +112,18 @@ struct ContentView: View {
                 }
                 .frame(width: UIScreen.main.bounds.width * 0.95)
                 .padding(.bottom, 8)
-
+                Button(action: {
+                    addEntry(glucoseValue: 5, dateEntered: Date(), context: viewContext)
+                    ivm.loadStats(context: viewContext)
+                    gvm.loadStats(context: viewContext)
+                }) {
+                    Label("Dexcom Down - Add sample data at 'now'", systemImage: "plus.circle")
+                }
             }
             .navigationTitle("Glyco Dashboard") // Title of the page
             // TIME RANGE PICKER
             .onAppear {
                 ivm.loadStats(context: viewContext)
-                print("wt")
             }
             .sheet(isPresented: $isShowingRangePicker) {
                 VStack(spacing: 24) {

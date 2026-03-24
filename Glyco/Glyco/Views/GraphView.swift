@@ -118,45 +118,91 @@ struct Graph: View {
                     y: .value("Level", entry.value)
                 )
             }
+            PointMark( // force graph to extend to "now"
+                x: .value("Time", Date()),
+                y: .value("Level", 7)
+            )
+            .opacity(0)
+            
         }
         .chartYAxis {
             AxisMarks(position: .leading)
         }
         .chartXAxis {
-            AxisMarks(values: .automatic) { value in
+            AxisMarks(values: ticks()) { value in
                 AxisGridLine()
-                AxisValueLabel {
+                AxisValueLabel(anchor: .trailing) {
                     if let date = value.as(Date.self) {
                         Text(relativeLabel(for: date))
-                            .font(.system(size: 10))
+                            .font(.system(size: 9))
+                            .offset(y: 8)
                     }
                 }
             }
+            AxisMarks(values: [Date()]) { _ in
+                AxisGridLine()
+                AxisValueLabel(anchor: .topTrailing){
+                    Text("now")
+                        .font(.system(size: 9))
+                        .offset(y:-16)
+                }
+            }
         }
+        
         .aspectRatio(1, contentMode: .fit)
+        
     }
     
     private func relativeLabel(for date: Date) -> String {
         let diff = Int(Date().timeIntervalSince(date))
         if diff < 60*5 { // 1 min or 5 mins?
-            return "now"
+            return ""
         } else if diff < 3600 { // <60 mins
             return "\(diff / 60)m ago"
-        } else if diff % 3600 == 0 {  // hours only
+        } else if diff < 86400{  // < 1 day
             return "\(diff / 3600)h ago"
-        } else if diff < 86400{ // <1 day
-            let h = diff / 3600
-            let m = (diff % 3600) / 60
-            return "\(h)h\(m)m ago"
-        } else{
-            let d = diff / 86400
-            let h = (diff % 86400) / 3600
-            let m = (diff % 3600) / 60
-            return "\(d)d\(h)h\(m)m ago"
+        }else{
+            return "\(diff / 86400)d ago"
         }
     }
-}
+    
+    private func ticks() -> [Date] {
+        guard let earliest = gvm.filteredList.first?.date else { return [] }
 
+        let totalMinutes = Int(Date().timeIntervalSince(earliest) / 60)
+        
+        let intervalMinutes: Int
+        switch totalMinutes {
+        case 0..<8:        intervalMinutes = 5
+        case 8..<15:       intervalMinutes = 5
+        case 15..<30:      intervalMinutes = 10
+        case 30..<60:      intervalMinutes = 15
+        case 60..<90:      intervalMinutes = 20
+        case 90..<120:     intervalMinutes = 30
+        case 120..<180:    intervalMinutes = 45
+        case 180..<240:    intervalMinutes = 60
+        case 240..<360:    intervalMinutes = 90
+        case 360..<480:    intervalMinutes = 120
+        case 480..<720:    intervalMinutes = 150
+        case 720..<960:    intervalMinutes = 180
+        case 960..<1440:   intervalMinutes = 240
+        case 1440..<2880:  intervalMinutes = 480
+        case 2880..<4320:  intervalMinutes = 720
+        case 4320..<8640:  intervalMinutes = 1440
+        default:           intervalMinutes = 2880
+        }
+        
+        let intervalSeconds = Double(intervalMinutes * 60)
+        
+        var ticks: [Date] = []
+        var current = Date().addingTimeInterval(-intervalSeconds)
+        while current > earliest {
+            ticks.append(current)
+            current = current.addingTimeInterval(-intervalSeconds)
+        }
+        return ticks.reversed()
+    }
+}
 struct Infobar: View {
     let title: String
     let value1: String

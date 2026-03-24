@@ -109,7 +109,7 @@ struct SecondBloodGlucoseStatisticsView: View {
 
 struct Graph: View {
     @EnvironmentObject var gvm: GraphViewModel
-    
+
     var body: some View {
         Chart {
             ForEach(gvm.filteredList, id: \.self) { entry in
@@ -123,6 +123,16 @@ struct Graph: View {
                 y: .value("Level", 7)
             )
             .opacity(0)
+            
+            if let latest = gvm.filteredList.last, let date = latest.date {
+                PointMark(
+                    x: .value("Time", date),
+                    y: .value("Level", latest.value)
+                )
+                .foregroundStyle(.blue)
+                .symbolSize(50)
+            }
+
             
         }
         .chartYAxis {

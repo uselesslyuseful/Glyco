@@ -240,8 +240,8 @@ struct Infobar: View {
             }
 
             Text(title)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.secondary)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundColor(.primary)
 
             Spacer()
 

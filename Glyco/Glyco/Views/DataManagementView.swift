@@ -7,7 +7,8 @@
 import SwiftUI
 
 struct DataManagementView: View {
-    
+    @Environment(\.managedObjectContext) private var viewContext
+
     @State private var showConfirm = false
     @State private var autoBackup = false
     @State private var backupHours: Double = 3
@@ -81,7 +82,9 @@ struct DataManagementView: View {
             // Confirmation Popup
             .alert("Confirm Delete", isPresented: $showConfirm) {
                 Button("Cancel", role: .cancel) {}
-                Button("Confirm", role: .destructive) {}
+                Button("Confirm", role: .destructive) {
+                    deleteAllGlucoseEntries(with: viewContext)
+                }
             } message: {
                 Text("Are you sure you want to clear all data?")
             }

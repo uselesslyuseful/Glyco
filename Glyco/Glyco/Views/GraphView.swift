@@ -167,8 +167,8 @@ struct Graph: View {
     }
     
     private func ticks() -> [Date] {
-        guard let earliest = gvm.filteredList.first?.date else { return [] }
-
+        let earliest = gvm.dateL
+                
         let totalMinutes = Int(Date().timeIntervalSince(earliest) / 60)
         
         let intervalMinutes: Int
@@ -183,9 +183,9 @@ struct Graph: View {
         case 180..<240:    intervalMinutes = 60
         case 240..<360:    intervalMinutes = 90
         case 360..<480:    intervalMinutes = 120
-        case 480..<720:    intervalMinutes = 150
-        case 720..<960:    intervalMinutes = 180
-        case 960..<1440:   intervalMinutes = 240
+        case 480..<720:    intervalMinutes = 180
+        case 720..<960:    intervalMinutes = 240
+        case 960..<1440:   intervalMinutes = 360
         case 1440..<2880:  intervalMinutes = 480
         case 2880..<4320:  intervalMinutes = 720
         case 4320..<8640:  intervalMinutes = 1440

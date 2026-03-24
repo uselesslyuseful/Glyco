@@ -4,7 +4,7 @@
 //
 //  Created by Vincent Pham on 2026-02-18.
 //
-
+import SwiftUI
 import Foundation
 import Combine
 import CoreData
@@ -19,8 +19,8 @@ class InsightsViewModel: ObservableObject {
     @Published var percIn: Double = 0
     @Published var filteredList: [GlucoseEntry] = []
     @Published var dateL: Date = Date().addingTimeInterval(-24*60*60)
-    let highThreshold: Double = 10
-    let lowThreshold: Double = 3.9
+    @AppStorage("highLimit") var highThreshold: Double = 10.0
+    @AppStorage("lowLimit") var lowThreshold: Double = 3.9
 
     func loadStats(context: NSManagedObjectContext) {
         let glucose = fetchGlucoseEntries(with: context)

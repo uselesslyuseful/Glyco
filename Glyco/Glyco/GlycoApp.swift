@@ -22,7 +22,6 @@ struct GlycoApp: App {
                 .environmentObject(dexcom)
                 .environmentObject(insightsVM)
                 .environmentObject(graphVM)
-
         }
 
     }

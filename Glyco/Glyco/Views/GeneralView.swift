@@ -6,7 +6,8 @@
 import SwiftUI
 
 struct GeneralView: View {
-    
+    @EnvironmentObject var ivm: InsightsViewModel
+    @EnvironmentObject var gvm: GraphViewModel
     @State private var lowGlucoseAlert = true
     @State private var rapidRiseAlert = true
     @State private var signalLossAlert = true
@@ -16,11 +17,11 @@ struct GeneralView: View {
     @State private var selectedTimeFormat = "12-hour"
     let timeFormats = ["12-hour", "24-hour"]
     
-    @State private var selectedUnit = "mmol/L"
+    @AppStorage("preferredUnit") private var selectedUnit = "mmol/L"
     let units = ["mmol/L", "mg/dL"]
     
-    @State private var highLimit = ""
-    @State private var lowLimit = ""
+    @AppStorage("highLimit") var highLimit = 10.0
+    @AppStorage("lowLimit") var lowLimit = 3.9
     
     var body: some View {
         VStack(spacing: 0) {
@@ -94,7 +95,7 @@ struct GeneralView: View {
                             Text("High Limit")
                                 .font(.caption)
                             
-                            TextField("Default", text: $highLimit)
+                            TextField("Default", value: $highLimit, format: .number)
                                 .padding()
                                 .background(Color(.systemGray6))
                                 .cornerRadius(10)
@@ -104,7 +105,7 @@ struct GeneralView: View {
                             Text("Low Limit")
                                 .font(.caption)
                             
-                            TextField("Default", text: $lowLimit)
+                            TextField("Default", value: $lowLimit, format: .number)
                                 .padding()
                                 .background(Color(.systemGray6))
                                 .cornerRadius(10)

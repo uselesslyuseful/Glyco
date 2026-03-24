@@ -29,6 +29,7 @@ struct ContentView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 8) {
+                    
                     // FIRST ROW (Title and time picker)
                     HStack(spacing: 0){
                         // TITLE
@@ -121,6 +122,13 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Glyco Dashboard") // Title of the page
+            .toolbar{
+                ToolbarItem(placement: .topBarTrailing){
+                    NavigationLink(destination: SettingsView()) {
+                        Image(systemName: "gearshape")
+                    }
+                }
+            }
             // TIME RANGE PICKER
             .onAppear {
                 ivm.loadStats(context: viewContext)

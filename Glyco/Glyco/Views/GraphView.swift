@@ -141,11 +141,10 @@ struct Graph: View {
         .chartXAxis {
             AxisMarks(values: ticks()) { value in
                 AxisGridLine()
-                AxisValueLabel(anchor: .trailing) {
+                AxisValueLabel(anchor: .topTrailing) {
                     if let date = value.as(Date.self) {
                         Text(relativeLabel(for: date))
                             .font(.system(size: 9))
-                            .offset(y: 8)
                     }
                 }
             }
@@ -154,7 +153,6 @@ struct Graph: View {
                 AxisValueLabel(anchor: .topTrailing){
                     Text("now")
                         .font(.system(size: 9))
-                        .offset(y:-16)
                 }
             }
         }

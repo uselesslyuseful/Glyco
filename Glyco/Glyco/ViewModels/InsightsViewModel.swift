@@ -21,6 +21,8 @@ class InsightsViewModel: ObservableObject {
     @Published var dateL: Date = Date().addingTimeInterval(-24*60*60)
     @AppStorage("highLimit") var highThreshold: Double = 10.0
     @AppStorage("lowLimit") var lowThreshold: Double = 3.9
+    @AppStorage("preferredUnit") var selectedUnit = "mmol/L"
+
 
     func loadStats(context: NSManagedObjectContext) {
         let glucose = fetchGlucoseEntries(with: context)

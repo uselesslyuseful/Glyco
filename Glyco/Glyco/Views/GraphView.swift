@@ -11,6 +11,7 @@ import Charts
 // MARK: - Graph
 struct SecondBloodGlucoseStatisticsView: View {
     @EnvironmentObject var gvm: GraphViewModel
+    @EnvironmentObject var tvm: TrendViewModel
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
@@ -59,6 +60,7 @@ struct SecondBloodGlucoseStatisticsView: View {
         .frame(width: UIScreen.main.bounds.width * 0.95)
         .onAppear {
             gvm.loadStats(context: viewContext)
+            tvm.loadStats(context: viewContext)
         }
         .sheet(isPresented: $isShowingRangePicker) {
             VStack(spacing: 24) {
@@ -94,12 +96,12 @@ struct SecondBloodGlucoseStatisticsView: View {
             
         }
         Infobar(
-            title: "Trend",
-            value1: "Rising Fast",
-            value2: "+0.8",
+            title: "Rate",
+            value1: tvm.rateText,
+            value2: "\(tvm.rate)",
             altValue: "mmol/min",
-            systemImages: ["arrow.up.forward.circle.fill", "arrow.up.forward"],
-            accentColor: .red
+            systemImages: [tvm.icons[0], tvm.icons[1]],
+            accentColor: tvm.accent ?? .accentColor
         )
         .frame(width: UIScreen.main.bounds.width * 0.95)
     }

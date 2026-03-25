@@ -14,6 +14,7 @@ struct GlycoApp: App {
     @StateObject private var dexcom = DexcomClient()
     @StateObject private var insightsVM = InsightsViewModel()
     @StateObject private var graphVM = GraphViewModel()
+    @StateObject private var trendVM = TrendViewModel()
 
     var body: some Scene {
         WindowGroup {
@@ -22,6 +23,7 @@ struct GlycoApp: App {
                 .environmentObject(dexcom)
                 .environmentObject(insightsVM)
                 .environmentObject(graphVM)
+                .environmentObject(trendVM)
         }
 
     }

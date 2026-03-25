@@ -25,7 +25,7 @@ class GraphViewModel: ObservableObject {
                 }
             }
         }
-        filteredList = filteredList.sorted { ($0.date ?? Date()) < ($1.date ?? Date()) }
+        filteredList = filteredList.sorted { ($0.date ?? Date()) < ($1.date ?? Date()) } // latest at end
 
     }
 }

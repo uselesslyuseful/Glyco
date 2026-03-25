@@ -248,16 +248,18 @@ struct Infobar: View {
             Spacer()
 
             HStack(spacing: 6) {
-                if let altValue {
-                    Text(altValue)
-                        .font(.system(size: 12, weight: .regular))
-                        .foregroundColor(.secondary)
-                }
                 if let value2 {
                     Text(value2)
                         .font(.system(size: 12, weight: .regular))
                         .foregroundColor(.secondary)
                 }
+                if let altValue {
+                    Text(altValue)
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundColor(.secondary)
+                }
+
+                
                 Text(value1)
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundColor(accentColor)

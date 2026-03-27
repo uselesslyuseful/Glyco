@@ -21,6 +21,7 @@ struct SecondBloodGlucoseStatisticsView: View {
     @State private var hours: Int = 0 // DEFAULT VALUE HEREEEEEE
     @State private var days: Int = 1
     
+    
     var body: some View {
         VStack(alignment: .leading) {
             
@@ -110,8 +111,12 @@ struct SecondBloodGlucoseStatisticsView: View {
 
 
 struct Graph: View {
+    @EnvironmentObject var ivm: InsightsViewModel
     @EnvironmentObject var gvm: GraphViewModel
-
+    
+    @AppStorage("highLimit") var highThreshold: Double = 10.0
+    @AppStorage("lowLimit") var lowThreshold: Double = 3.9
+    
     var body: some View {
         Chart {
             ForEach(gvm.filteredList, id: \.self) { entry in
@@ -134,8 +139,17 @@ struct Graph: View {
                 .foregroundStyle(.blue)
                 .symbolSize(50)
             }
-
+            RuleMark(y: .value("High", highThreshold))
+                .foregroundStyle(.red.opacity(0.5))
+                .lineStyle(StrokeStyle(lineWidth: 1))
             
+            RuleMark(y: .value("Low", lowThreshold))
+                .foregroundStyle(.red.opacity(0.5))
+                .lineStyle(StrokeStyle(lineWidth: 1))
+
+            RuleMark(y: .value("Average", ivm.averagemmol))
+                .foregroundStyle(.teal.opacity(0.5))
+                .lineStyle(StrokeStyle(lineWidth: 1))
         }
         .chartYAxis {
             AxisMarks(position: .leading)

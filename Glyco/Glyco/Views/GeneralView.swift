@@ -73,16 +73,16 @@ struct GeneralView: View {
                             .pickerStyle(.menu)
                         }
                         
-                        HStack {
-                            Text("Preferred Units")
-                            Spacer()
-                            Picker("Preferred Units", selection: $selectedUnit) {
-                                ForEach(units, id: \.self) { unit in
-                                    Text(unit)
-                                }
-                            }
-                            .pickerStyle(.menu)
-                        }
+//                        HStack {
+//                            Text("Preferred Units")
+//                            Spacer()
+//                            Picker("Preferred Units", selection: $selectedUnit) {
+//                                ForEach(units, id: \.self) { unit in
+//                                    Text(unit)
+//                                }
+//                            }
+//                            .pickerStyle(.menu)
+//                        }
                     }
                     
                     

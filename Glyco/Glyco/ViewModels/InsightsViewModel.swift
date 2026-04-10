@@ -18,14 +18,18 @@ class InsightsViewModel: ObservableObject {
     @Published var percLow: Double = 0
     @Published var percIn: Double = 0
     @Published var filteredList: [GlucoseEntry] = []
+    @Published var dataPresent: Bool = false
     @Published var dateL: Date = Date().addingTimeInterval(-24*60*60)
     @AppStorage("highLimit") var highThreshold: Double = 10.0
     @AppStorage("lowLimit") var lowThreshold: Double = 3.9
     @AppStorage("preferredUnit") var selectedUnit = "mmol/L"
 
-
+    
     func loadStats(context: NSManagedObjectContext) {
         let glucose = fetchGlucoseEntries(with: context)
+        if !glucose.isEmpty{
+            dataPresent = true
+        }
 
         guard !glucose.isEmpty else { return }
         filteredList.removeAll()

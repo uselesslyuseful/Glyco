@@ -8,7 +8,9 @@ import SwiftUI
 
 struct DataManagementView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var ivm: InsightsViewModel
 
+    
     @State private var showConfirm = false
     @State private var autoBackup = false
     @State private var backupHours: Double = 3
@@ -83,7 +85,12 @@ struct DataManagementView: View {
             .alert("Confirm Delete", isPresented: $showConfirm) {
                 Button("Cancel", role: .cancel) {}
                 Button("Confirm", role: .destructive) {
-                    deleteAllGlucoseEntries(with: viewContext)
+                    Task{
+                        await deleteAllGlucoseEntries(with: viewContext)
+                        await MainActor.run{
+                            ivm.loadStats(context: viewContext)
+                        }
+                    }
                 }
             } message: {
                 Text("Are you sure you want to clear all data?")

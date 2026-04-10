@@ -24,6 +24,7 @@ struct MeetingView: View {
                             vm.loadStats(context: viewContext)
                         }
                     } // TODO: adoinalwd
+                    // in retrospect, should have been more specific. no clue what i had to do.
                     
                 }
 

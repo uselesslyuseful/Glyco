@@ -27,7 +27,7 @@ struct SettingsButton: View {
 }
 
 struct SettingsView: View {
-    
+    @EnvironmentObject var userData: UserData
     var body: some View {
         
         VStack(spacing: 25) {
@@ -35,18 +35,22 @@ struct SettingsView: View {
             Divider()
             // Profile Section
             HStack(spacing: 20) {
-            
-                Circle()
-                    .fill(Color.blue.opacity(0.3))
-                    .frame(width: 80, height: 80)
-                    .overlay {
-                        Circle().stroke(.white, lineWidth: 4)
-                    }
-                    .shadow(radius: 7)
+                
+                if let image = userData.profileImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 80, height: 80)
+                        .clipShape(Circle())
+                } else {
+                    Circle()
+                        .fill(Color.blue.opacity(0.3))
+                        .frame(width: 80, height: 80)
+                }
                 
                 VStack(alignment: .leading) {
-                    Text("Name: ___")
-                    Text("Age: ___")
+                    Text("Name: \(userData.name.isEmpty ? "___" : userData.name)")
+                    Text("Age: \(userData.age.isEmpty ? "___" : userData.age)")
                 }
             }
             .padding(.top, 20)

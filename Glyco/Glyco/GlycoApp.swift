@@ -15,6 +15,7 @@ struct GlycoApp: App {
     @StateObject private var insightsVM = InsightsViewModel()
     @StateObject private var graphVM = GraphViewModel()
     @StateObject private var trendVM = TrendViewModel()
+    @StateObject private var userData = UserData()
 
     var body: some Scene {
         WindowGroup {
@@ -24,6 +25,7 @@ struct GlycoApp: App {
                 .environmentObject(insightsVM)
                 .environmentObject(graphVM)
                 .environmentObject(trendVM)
+                .environmentObject(userData)
         }
 
     }

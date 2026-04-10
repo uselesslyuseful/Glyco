@@ -27,6 +27,9 @@ struct LinkDeviceButton: View {
 }
 
 struct LinkDeviceView: View {
+    @EnvironmentObject var dexcom: DexcomClient
+    @EnvironmentObject var vm: InsightsViewModel
+    @Environment(\.managedObjectContext) private var viewContext
     var body: some View {
         Divider()
         VStack {
@@ -38,19 +41,23 @@ struct LinkDeviceView: View {
                 
                 //CHANGE DESTINATION TO POP-UP TO LINK DEVICES
                 
-                NavigationLink(destination: GeneralView()) {
-                    LinkDeviceButton(label: "Search for monitor")
+                Button {
+                    Task {
+                        if dexcom.isAuthenticated {
+                            await dexcom.fetchEGVs()
+                            await dexcom.importEGVsIntoCoreData(context: viewContext)
+                            await MainActor.run {
+                                vm.loadStats(context: viewContext)
+                            }
+                        } else {
+                            dexcom.login()
+                        }
+                    }
+                } label: {
+                    LinkDeviceButton(label: dexcom.isAuthenticated ? "Sync Dexcom Data" : "Connect Dexcom")
                 }
                 .padding(10)
                 Spacer().frame(height: 60)
-                Text("Insulin Pump")
-                    .padding(10)
-                    .bold()
-                Text("          Current Device")
-                NavigationLink(destination: GeneralView()) {
-                    LinkDeviceButton(label: "Search for pump")
-                }
-                .padding(10)
             }
             .padding(20)
             Spacer()

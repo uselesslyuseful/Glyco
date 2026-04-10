@@ -17,17 +17,6 @@ struct MeetingView: View {
         VStack(spacing: 20) {
 
             if dexcom.isAuthenticated {
-                Button("Fetch Glucose Data") {
-                    Task {
-                        await dexcom.fetchEGVs()
-                        await dexcom.importEGVsIntoCoreData(context: viewContext)
-                        await MainActor.run {
-                            vm.loadStats(context: viewContext)
-                        }
-                        
-                    }
-
-                }
                 Button("Clear Data") {
                     Task{
                         await deleteAllGlucoseEntries(with: viewContext)

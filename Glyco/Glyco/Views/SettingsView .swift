@@ -26,6 +26,26 @@ struct SettingsButton: View {
     }
 }
 
+struct DataSettingsButton: View {
+    
+    let label: String
+    
+    var body: some View {
+        
+        Text(label)
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.systemGray2))
+            .foregroundColor(.gray)
+            .cornerRadius(25)
+            .overlay(
+                RoundedRectangle(cornerRadius: 25)
+                    .stroke(Color.gray, lineWidth: 1)
+            )
+            .padding(.horizontal, 40)
+    }
+}
+
 struct SettingsView: View {
     @EnvironmentObject var userData: UserData
     var body: some View {
@@ -67,7 +87,7 @@ struct SettingsView: View {
             }
             
             NavigationLink(destination: DataManagementView()) {
-                SettingsButton(label: "Data Management")
+                DataSettingsButton(label: "Data Management")
             }
             
             NavigationLink(destination: LinkDeviceView()) {

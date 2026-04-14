@@ -1,56 +1,65 @@
+//
+//  TagOverlay.swift
+//  Glyco
+//
+
 import SwiftUI
 
 struct TagOverlay: View {
 
-    let tag: TagEntry
-    let hourHeight: CGFloat
-    let width: CGFloat
-
-    @State private var showEdit = false
+    let info: TagLayoutInfo
+    let width: CGFloat    // pre-computed lane width
+    let xOffset: CGFloat  // pre-computed x position (from GeometryReader's left edge)
 
     var body: some View {
+        let tag = info.tag
 
-        let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: Date())
+        ZStack(alignment: .topLeading) {
+            // Background block — full height
+            RoundedRectangle(cornerRadius: 6)
+                .fill(Color(hex: tag.wrappedColorHex).opacity(0.35))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 6)
+                        .strokeBorder(Color(hex: tag.wrappedColorHex).opacity(0.65), lineWidth: 1)
+                )
 
-        let startMin = minutes(from: startOfDay, to: tag.wrappedStart)
-        let endMin = minutes(from: startOfDay, to: tag.wrappedEnd)
-
-        let top = CGFloat(startMin) / 60 * hourHeight
-        let height = max(CGFloat(endMin - startMin) / 60 * hourHeight, 22)
-
-        return tagView
-            .frame(width: width - 60, height: height, alignment: .topLeading)
-            .position(x: (width - 60) / 2 + 60, y: top + height / 2)
-            .onTapGesture(count: 2) {
-                showEdit = true
-            }
-            .sheet(isPresented: $showEdit) {
-                EditTagView(tag: tag)
-            }
-    }
-
-    private var tagView: some View {
-        HStack {
+            // Label — nudged down if it would collide with the tag above
             VStack(alignment: .leading, spacing: 2) {
                 Text(tag.wrappedTitle)
                     .font(.caption)
                     .bold()
+                    .lineLimit(2)
 
                 if !tag.wrappedDetail.isEmpty {
                     Text(tag.wrappedDetail)
                         .font(.caption2)
+                        .lineLimit(1)
                 }
-            }
 
-            Spacer()
+                Text(durationLabel)
+                    .font(.caption2)
+                    .opacity(0.7)
+            }
+            .padding(.horizontal, 5)
+            .padding(.top, 4 + info.textOffsetY)  // nudge applied here
+            .padding(.bottom, 4)
         }
-        .padding(6)
-        .background(Color(hex: tag.wrappedColorHex).opacity(0.4))
-        .cornerRadius(8)
+        .frame(width: width, height: info.blockHeight)
+        .offset(x: xOffset, y: info.topY)
     }
 
-    private func minutes(from start: Date, to end: Date) -> Int {
-        Calendar.current.dateComponents([.minute], from: start, to: end).minute ?? 0
+    // MARK: - Helpers
+
+    private var durationLabel: String {
+        let components = Calendar.current.dateComponents(
+            [.hour, .minute],
+            from: info.tag.wrappedStart,
+            to: info.tag.wrappedEnd
+        )
+        let h = components.hour   ?? 0
+        let m = components.minute ?? 0
+        if h == 0 { return "\(m)m" }
+        if m == 0 { return "\(h)h" }
+        return "\(h)h \(m)m"
     }
 }

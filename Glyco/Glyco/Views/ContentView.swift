@@ -24,9 +24,6 @@ struct ContentView: View {
     @State private var weeks: Int = 0
     @State private var days: Int = 1 // DEFAULT VALUE HEREEEEEE
     @State private var hours: Int = 0
-    @State private var noDataAlert: Bool = false
-
-    @State private var isPresentingLinkDevice = false
     
     var body: some View {
         NavigationStack {
@@ -126,6 +123,11 @@ struct ContentView: View {
             }
             .navigationTitle("Glyco Dashboard") // Title of the page
             .toolbar{
+                ToolbarItem(placement: .topBarLeading) {
+                        NavigationLink(destination: CalendarView()) {
+                            Image(systemName: "calendar")
+                        }
+                    }
                 ToolbarItem(placement: .topBarTrailing){
                     NavigationLink(destination: SettingsView()) {
                         Image(systemName: "gearshape")
@@ -135,9 +137,6 @@ struct ContentView: View {
             // TIME RANGE PICKER
             .onAppear {
                 ivm.loadStats(context: viewContext)
-                if ivm.dataPresent == false{
-                    noDataAlert == true
-                }
             }
             .sheet(isPresented: $isShowingRangePicker) {
                 VStack(spacing: 24) {
@@ -170,30 +169,7 @@ struct ContentView: View {
                 }
                 .padding()
                 .presentationDetents([.fraction(0.45), .medium])
-                .alert(isPresented: $noDataAlert) {
-                        Alert(
-                            title: Text("No Data Detected"),
-                            message: Text("Connect a sensor?"),
-                            primaryButton: .default(
-                                Text("Connect"),
-                                action: { isPresentingLinkDevice = true }
-                            ),
-                            secondaryButton: .default(
-                                Text("Dismiss"),
-                            )
-                        )
-                    }
-                .sheet(isPresented: $isPresentingLinkDevice) {
-                    NavigationStack {
-                        LinkDeviceView()
-                            .navigationTitle("Connect Device")
-                            .toolbar {
-                                ToolbarItem(placement: .topBarTrailing) {
-                                    Button("Done") { isPresentingLinkDevice = false }
-                                }
-                            }
-                    }
-                }
+                
             }
         }
         

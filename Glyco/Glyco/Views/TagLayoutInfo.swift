@@ -1,4 +1,12 @@
 //
+//  TagLayoutInfo.swift
+//  Glyco
+//
+//  Created by Susan Zheng on 2026-04-13.
+//
+
+
+//
 //  TagLayoutEngine.swift
 //  Glyco
 //

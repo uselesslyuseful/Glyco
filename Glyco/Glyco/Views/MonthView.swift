@@ -21,7 +21,7 @@ struct MonthView: View {
         ScrollViewReader { proxy in
             ScrollView {
 
-                LazyVStack(spacing: 20) {   // 🔥 IMPORTANT CHANGE
+                LazyVStack(spacing: 20) {
 
                     ForEach(monthOffsets, id: \.self) { offset in
 
@@ -75,7 +75,6 @@ struct MonthGrid: View {
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(6)
 
-                            // 👇 DOUBLE TAP → WEEK
                             .onTapGesture(count: 2) {
                                 onDoubleTap(date)
                             }

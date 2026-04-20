@@ -134,45 +134,42 @@ class DexcomClient: NSObject, ObservableObject {
     }
     
     func importEGVsIntoCoreData(context: NSManagedObjectContext) {
-        // MARK: - Temporary fix to shift all data from dexcom sandbox to now, since sandbox is having issues
-        guard !glucoseValues.isEmpty else { return }
 
-        deleteAllGlucoseEntries(with: context)
+        let fetchRequest: NSFetchRequest<GlucoseEntry> = GlucoseEntry.fetchRequest()
 
-        let latestRecordDate = glucoseValues.compactMap {
-            dexcomDateFormatter.date(from: $0.systemTime) ??
-            ISO8601DateFormatter().date(from: $0.systemTime)
-        }.max() ?? Date()
+        do {
+            let existingEntries = try context.fetch(fetchRequest)
 
-        let offset = Date().timeIntervalSince(latestRecordDate)
-        print("Shifting dates by \(offset / 3600) hours")
-        
-        // MARK: - End of temp fix section
-        for egv in glucoseValues {
-            
+            // Create a set of existing timestamps
+            let existingDates = Set(existingEntries.compactMap { $0.date })
 
-            
-            let date =
-                dexcomDateFormatter.date(from: egv.systemTime) ??
-                ISO8601DateFormatter().date(from: egv.systemTime) ??
-                Date()
-            
-            // MARK: - Start of temp fix
-            let shiftedDate = date.addingTimeInterval(offset)
-            // MARK: - End of temp fix
-            
-            // Convert to mmol
-            let mmol = mgdlToMmol(egv.value)
+            for egv in glucoseValues {
 
-            // Save using your existing pipeline
-            addEntry(
-                glucoseValue: mmol,
-//                dateEntered: date,
-                // MARK: - Start of temp fix
-                dateEntered: shiftedDate,
-                // MARK: - End of temp fix
-                context: context
-            )
+                let date =
+                    dexcomDateFormatter.date(from: egv.systemTime) ??
+                    ISO8601DateFormatter().date(from: egv.systemTime)
+
+                guard let date else { continue }
+
+                if existingDates.contains(where: {
+                    abs($0.timeIntervalSince(date)) < 1
+                }) {
+                    continue
+                }
+
+                let mmol = mgdlToMmol(egv.value)
+
+                addEntry(
+                    glucoseValue: mmol,
+                    dateEntered: date,
+                    context: context
+                )
+            }
+
+            try context.save()
+
+        } catch {
+            print("Core Data import error:", error)
         }
     }
     
@@ -202,4 +199,6 @@ extension DexcomClient: ASWebAuthenticationPresentationContextProviding {
         UIApplication.shared.windows.first!
     }
 }
+
+
 

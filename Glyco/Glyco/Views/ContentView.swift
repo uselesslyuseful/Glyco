@@ -15,6 +15,7 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject var ivm: InsightsViewModel
     @EnvironmentObject var gvm: GraphViewModel
+    @EnvironmentObject var dexcom: DexcomClient
 
     @Environment(\.managedObjectContext) private var viewContext
     
@@ -172,8 +173,15 @@ struct ContentView: View {
                 
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            Task {
+                await dexcom.fetchEGVs()
+                dexcom.importEGVsIntoCoreData(context: viewContext)
+            }
+        }
         
     }
+    
 }
 
 

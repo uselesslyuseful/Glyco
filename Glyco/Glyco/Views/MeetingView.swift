@@ -1,14 +1,8 @@
-//
-//  MeetingView.swift
-//  Glyco
-//
-//  Created by Susan Zheng on 2026-02-18.
-//
-
-
 import SwiftUI
 
 struct MeetingView: View {
+    @State private var timer: Timer?
+
     @EnvironmentObject var vm: InsightsViewModel
     @EnvironmentObject var dexcom: DexcomClient
     @Environment(\.managedObjectContext) private var viewContext
@@ -17,15 +11,14 @@ struct MeetingView: View {
         VStack(spacing: 20) {
 
             if dexcom.isAuthenticated {
+
                 Button("Clear Data") {
-                    Task{
+                    Task {
                         await deleteAllGlucoseEntries(with: viewContext)
-                        await MainActor.run{
+                        await MainActor.run {
                             vm.loadStats(context: viewContext)
                         }
-                    } // TODO: adoinalwd
-                    // in retrospect, should have been more specific. no clue what i had to do.
-                    
+                    }
                 }
 
                 List(dexcom.glucoseValues, id: \.systemTime) { egv in
@@ -46,6 +39,37 @@ struct MeetingView: View {
         }
         .padding()
         .navigationTitle("Dexcom")
+
+        .onAppear {
+            startAutoFetch()
+        }
+
+        .onDisappear {
+            timer?.invalidate()
+        }
+    }
+
+    func startAutoFetch() {
+
+        // run immediately once
+        Task {
+            await runFetch()
+        }
+
+        // then repeat every 5 minutes
+        timer = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { _ in
+            Task {
+                await runFetch()
+            }
+        }
+    }
+
+    func runFetch() async {
+        await dexcom.fetchEGVs()
+        dexcom.importEGVsIntoCoreData(context: viewContext)
+
+        await MainActor.run {
+            vm.loadStats(context: viewContext)
+        }
     }
 }
-

@@ -16,6 +16,33 @@ struct GlycoApp: App {
     @StateObject private var graphVM = GraphViewModel()
     @StateObject private var trendVM = TrendViewModel()
     @StateObject private var userData = UserData()
+    @StateObject private var autoFetchVM: AutoFetchViewModel
+    
+    init() {
+        let persistenceController = PersistenceController.shared
+
+        let dexcom = DexcomClient()
+        let insightsVM = InsightsViewModel()
+        let graphVM = GraphViewModel()
+        let trendVM = TrendViewModel()
+
+        _dexcom = StateObject(wrappedValue: dexcom)
+        _insightsVM = StateObject(wrappedValue: insightsVM)
+        _graphVM = StateObject(wrappedValue: graphVM)
+        _trendVM = StateObject(wrappedValue: trendVM)
+
+        let context = persistenceController.container.viewContext
+
+        _autoFetchVM = StateObject(
+            wrappedValue: AutoFetchViewModel(
+                dexcom: dexcom,
+                context: context,
+                ivm: insightsVM,
+                gvm: graphVM,
+                tvm: trendVM
+            )
+        )
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -26,6 +53,7 @@ struct GlycoApp: App {
                 .environmentObject(graphVM)
                 .environmentObject(trendVM)
                 .environmentObject(userData)
+                .environmentObject(autoFetchVM)
         }
 
     }

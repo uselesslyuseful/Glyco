@@ -1,14 +1,45 @@
 import SwiftUI
 
 struct MeetingView: View {
-    @State private var timer: Timer?
-
-    @EnvironmentObject var vm: InsightsViewModel
+    @EnvironmentObject var afvm: AutoFetchViewModel
+    @EnvironmentObject var ivm: InsightsViewModel
+    @EnvironmentObject var gvm: GraphViewModel
+    @EnvironmentObject var tvm: TrendViewModel
     @EnvironmentObject var dexcom: DexcomClient
     @Environment(\.managedObjectContext) private var viewContext
 
     var body: some View {
         VStack(spacing: 20) {
+
+            HStack {
+                if afvm.isAutoFetchActive {
+                    if afvm.secondsUntilNextFetch > 0 {
+                        Text("Next update in \(formattedTime(afvm.secondsUntilNextFetch))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Updating…")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                } else {
+                    Text("Auto-fetch paused")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if afvm.isAutoFetchActive {
+                    Button("Stop") {
+                        afvm.stopAutoFetch()
+                    }
+                    .buttonStyle(.bordered)
+                } else {
+                    Button("Start") {
+                        afvm.startAutoFetch()
+                    }
+                    .buttonStyle(.borderedProminent)
+                }
+            }
 
             if dexcom.isAuthenticated {
 
@@ -16,7 +47,9 @@ struct MeetingView: View {
                     Task {
                         await deleteAllGlucoseEntries(with: viewContext)
                         await MainActor.run {
-                            vm.loadStats(context: viewContext)
+                            ivm.loadStats(context: viewContext)
+                            gvm.loadStats(context: viewContext)
+                            tvm.loadStats(context: viewContext)
                         }
                     }
                 }
@@ -39,37 +72,13 @@ struct MeetingView: View {
         }
         .padding()
         .navigationTitle("Dexcom")
-
-        .onAppear {
-            startAutoFetch()
-        }
-
-        .onDisappear {
-            timer?.invalidate()
-        }
     }
 
-    func startAutoFetch() {
-
-        // run immediately once
-        Task {
-            await runFetch()
-        }
-
-        // then repeat every 5 minutes
-        timer = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { _ in
-            Task {
-                await runFetch()
-            }
-        }
+    private func formattedTime(_ seconds: Int) -> String {
+        let minutes = seconds / 60
+        let secs = seconds % 60
+        return String(format: "%02d:%02d", minutes, secs)
     }
 
-    func runFetch() async {
-        await dexcom.fetchEGVs()
-        dexcom.importEGVsIntoCoreData(context: viewContext)
 
-        await MainActor.run {
-            vm.loadStats(context: viewContext)
-        }
-    }
 }

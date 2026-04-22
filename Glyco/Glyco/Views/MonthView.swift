@@ -62,7 +62,7 @@ struct MonthGrid: View {
     let monthDate: Date
     @Environment(\.managedObjectContext) private var context
     var selectedTags: Set<Tag>
-    var onDoubleTap: (Date) -> Void
+    var onTap: (Date) -> Void
 
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
 
@@ -85,8 +85,8 @@ struct MonthGrid: View {
                             )
                             .cornerRadius(6)
 
-                            .onTapGesture(count: 2) {
-                                onDoubleTap(date)
+                            .onTapGesture(count: 1) {
+                                onTap(date)
                             }
 
                     } else {

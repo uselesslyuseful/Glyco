@@ -1,3 +1,6 @@
+import CoreData
+import SwiftUI
+
 struct TagFilterView: View {
     @Environment(\.dismiss) private var dismiss
 

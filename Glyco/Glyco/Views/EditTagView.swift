@@ -14,8 +14,16 @@ struct EditTagView: View {
     @Environment(\.dismiss) private var dismiss
 
     var tag: TagEntry
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.title, ascending: true)]
+    ) private var tags: FetchedResults<Tag>
 
-    @State private var title: String = ""
+    @State private var selectedTag: Tag?
+    @State private var creatingNewTag = false
+    @State private var newTagTitle = ""
+
+    @State private var tagTitle: String = ""
     @State private var detail: String = ""
     @State private var start: Date = Date()
     @State private var end: Date = Date()
@@ -23,8 +31,25 @@ struct EditTagView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Tag Info")) {
-                    TextField("Title", text: $title)
+                Section(header: Text("Tag")) {
+                    Picker("Select Tag", selection: $selectedTag) {
+                        ForEach(tags) { t in
+                            Text(t.wrappedTitle).tag(Optional(t))
+                        }
+                        Text("+ New Tag").tag(nil as Tag?)
+                    }
+                    .onChange(of: selectedTag) { value in
+                        creatingNewTag = (value == nil)
+                    }
+
+                    if creatingNewTag {
+                        TextField("New tag name", text: $newTagTitle)
+                    } else {
+                        TextField("Rename tag", text: $tagTitle)
+                    }
+                }
+
+                Section(header: Text("Details")) {
                     TextField("Detail", text: $detail)
                 }
 
@@ -53,14 +78,40 @@ struct EditTagView: View {
     }
 
     private func loadData() {
-        title = tag.wrappedTitle
+        selectedTag = tag.tag
+        creatingNewTag = false
+
+        tagTitle = tag.tag?.wrappedTitle ?? ""
         detail = tag.wrappedDetail
         start = tag.wrappedStart
         end = tag.wrappedEnd
     }
 
     private func saveChanges() {
-        tag.title = title
+        let tagToUse: Tag
+
+        if creatingNewTag {
+            guard !newTagTitle.trimmingCharacters(in: .whitespaces).isEmpty else {
+                return
+            }
+
+            let newTag = Tag(context: context)
+            newTag.id = UUID()
+            newTag.title = newTagTitle
+            newTag.colorHex = "#4CAF50"
+            tagToUse = newTag
+
+        } else if let selectedTag {
+            tagToUse = selectedTag
+
+            // Rename existing tag (affects all entries using it)
+            tagToUse.title = tagTitle
+
+        } else {
+            return
+        }
+
+        tag.tag = tagToUse
         tag.detail = detail
         tag.startDate = start
         tag.endDate = end

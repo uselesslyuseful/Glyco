@@ -21,7 +21,7 @@ struct TagBlockView: View {
 
         return VStack(alignment: .leading, spacing: 2) {
 
-            Text(tag.wrappedTitle)
+            Text(tag.tag?.wrappedTitle ?? "Untitled")
                 .font(.caption)
                 .bold()
 
@@ -43,7 +43,7 @@ struct TagBlockView: View {
         }
         .padding(6)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color(hex: tag.wrappedColorHex).opacity(0.6)) // 👈 semi-transparent
+        .background(Color(hex: tag.tag?.wrappedColorHex ?? "#CCCCCC").opacity(0.45))
         .cornerRadius(8)
         .overlay(
             RoundedRectangle(cornerRadius: 8)

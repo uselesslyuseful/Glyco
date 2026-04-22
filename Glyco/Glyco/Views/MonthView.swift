@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct MonthView: View {
+    var selectedTags: Set<Tag>
 
     var onSelectWeek: (Date) -> Void
 
@@ -31,7 +32,10 @@ struct MonthView: View {
                             to: baseMonth
                         )!
 
-                        MonthGrid(monthDate: monthDate) { selectedDate in
+                        MonthGrid(
+                            monthDate: monthDate,
+                            selectedTags: selectedTags
+                        ) { selectedDate in
                             onSelectWeek(selectedDate)
                         }
                         .id(offset)
@@ -56,6 +60,8 @@ struct MonthView: View {
 struct MonthGrid: View {
 
     let monthDate: Date
+    @Environment(\.managedObjectContext) private var context
+    var selectedTags: Set<Tag>
     var onDoubleTap: (Date) -> Void
 
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -72,7 +78,11 @@ struct MonthGrid: View {
                     if let date = date {
                         Text("\(Calendar.current.component(.day, from: date))")
                             .frame(maxWidth: .infinity, minHeight: 40)
-                            .background(Color.gray.opacity(0.1))
+                            .background(
+                                matchesFilter(for: date)
+                                ? Color.yellow.opacity(0.4)
+                                : Color.gray.opacity(0.1)
+                            )
                             .cornerRadius(6)
 
                             .onTapGesture(count: 2) {
@@ -111,5 +121,20 @@ struct MonthGrid: View {
         }
 
         return days
+    }
+    
+    private func matchesFilter(for date: Date) -> Bool {
+        let entries = fetchTags(for: date, context: context)
+
+        if selectedTags.isEmpty {
+            return false
+        }
+
+        return entries.contains { entry in
+            if let tag = entry.tag {
+                return selectedTags.contains(tag)
+            }
+            return false
+        }
     }
 }

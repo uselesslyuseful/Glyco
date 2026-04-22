@@ -11,13 +11,21 @@ struct CalendarView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var screen: CalendarScreen = .month
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.title, ascending: true)]
+    ) private var allTags: FetchedResults<Tag>
+
+    @State private var selectedTags: Set<Tag> = []
+    @State private var showingSortSheet = false
 
     var body: some View {
         VStack {
             switch screen {
 
             case .month:
-                MonthView { selectedDate in
+                MonthView(
+                    selectedTags: selectedTags
+                ) { selectedDate in
                     screen = .week(selectedDate)
                 }
 
@@ -46,6 +54,15 @@ struct CalendarView: View {
                     }
                 }
             }
+
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Sort") {
+                    showingSortSheet = true
+                }
+            }
+        }
+        .sheet(isPresented: $showingSortSheet) {
+            TagFilterView(tags: allTags, selectedTags: $selectedTags)
         }
     }
 

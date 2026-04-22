@@ -14,20 +14,58 @@ struct AddTagView: View {
     @Environment(\.dismiss) private var dismiss
 
     var selectedDate: Date
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.title, ascending: true)]
+    ) private var tags: FetchedResults<Tag>
 
-    @State private var title = ""
+    @State private var selection: TagSelection?
+    @State private var newTagTitle = ""
+    
     @State private var detail = ""
-    @State private var start = Date()
+    @State private var start: Date
+    init(selectedDate: Date) {
+        self.selectedDate = selectedDate
+        _start = State(initialValue: selectedDate)
+        _end = State(initialValue: selectedDate.addingTimeInterval(3600))
+    }
     @State private var end = Date().addingTimeInterval(3600)
+    
+    enum TagSelection: Hashable {
+        case existing(Tag)
+        case new
+    }
 
     var body: some View {
         NavigationStack {
             Form {
-                TextField("Tag name", text: $title)
-                TextField("Detail (optional)", text: $detail)
+                Section(header: Text("Tag")) {
+                    Picker("Select Tag", selection: $selection) {
+                        ForEach(tags) { tag in
+                            Text(tag.wrappedTitle).tag(TagSelection.existing(tag))
+                        }
+                        Text("+ New Tag").tag(TagSelection.new)
+                    }
+                    .pickerStyle(.menu)
+                    .onChange(of: selection) { value in
+                        if case .existing = value {
+                            newTagTitle = ""
+                        }
+                    }
 
-                DatePicker("Start", selection: $start)
-                DatePicker("End", selection: $end)
+                    if case .new = selection {
+                        TextField("New tag name", text: $newTagTitle)
+                    }
+                }
+
+                Section(header: Text("Details")) {
+                    TextField("Detail (optional)", text: $detail)
+                }
+
+                Section(header: Text("Time")) {
+                    DatePicker("Start", selection: $start)
+                    DatePicker("End", selection: $end)
+                }
 
                 Button("Save") {
                     saveTag()
@@ -35,17 +73,47 @@ struct AddTagView: View {
                 }
             }
             .navigationTitle("New Tag")
+            .onAppear {
+                if selection == nil {
+                    if let first = tags.first {
+                        selection = .existing(first)
+                    } else {
+                        selection = .new
+                    }
+                }
+            }
         }
     }
 
     private func saveTag() {
-        let newTag = TagEntry(context: viewContext)
-        newTag.id = UUID()
-        newTag.title = title
-        newTag.detail = detail
-        newTag.startDate = start
-        newTag.endDate = end
-        newTag.colorHex = "#4CAF50"
+        let tagToUse: Tag
+
+        switch selection {
+        case .new:
+            guard !newTagTitle.trimmingCharacters(in: .whitespaces).isEmpty else {
+                return
+            }
+
+            let newTag = Tag(context: viewContext)
+            newTag.id = UUID()
+            newTag.title = newTagTitle
+            newTag.colorHex = "#4CAF50"
+            tagToUse = newTag
+
+        case .existing(let tag):
+            tagToUse = tag
+
+        case .none:
+            return
+        }
+        
+
+        let newEntry = TagEntry(context: viewContext)
+        newEntry.id = UUID()
+        newEntry.startDate = start
+        newEntry.endDate = end
+        newEntry.tag = tagToUse
+        newEntry.detail = detail
 
         try? viewContext.save()
     }

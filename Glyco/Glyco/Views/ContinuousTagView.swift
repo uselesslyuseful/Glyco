@@ -43,7 +43,7 @@ struct ContinuousTagView: View {
 
     private var tagBody: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(tag.wrappedTitle)
+            Text(tag.tag?.wrappedTitle ?? "Untitled")
                 .font(.caption)
                 .bold()
 
@@ -53,7 +53,7 @@ struct ContinuousTagView: View {
             }
         }
         .padding(6)
-        .background(Color(hex: tag.wrappedColorHex).opacity(0.45))
+        .background(Color(hex: tag.tag?.wrappedColorHex ?? "#CCCCCC").opacity(0.45))
         .cornerRadius(8)
     }
 

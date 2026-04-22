@@ -17,15 +17,15 @@ struct TagOverlay: View {
         ZStack(alignment: .topLeading) {
             // Background block — full height
             RoundedRectangle(cornerRadius: 6)
-                .fill(Color(hex: tag.wrappedColorHex).opacity(0.35))
+                .fill(Color(hex: tag.tag?.wrappedColorHex ?? "#CCCCCC").opacity(0.35))
                 .overlay(
                     RoundedRectangle(cornerRadius: 6)
-                        .strokeBorder(Color(hex: tag.wrappedColorHex).opacity(0.65), lineWidth: 1)
+                        .strokeBorder(Color(hex: tag.tag?.wrappedColorHex ?? "#CCCCCC").opacity(0.45), lineWidth: 1)
                 )
 
             // Label — nudged down if it would collide with the tag above
             VStack(alignment: .leading, spacing: 2) {
-                Text(tag.wrappedTitle)
+                Text(tag.tag?.wrappedTitle ?? "Untitled")
                     .font(.caption)
                     .bold()
                     .lineLimit(2)

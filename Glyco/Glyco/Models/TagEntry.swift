@@ -21,21 +21,16 @@ extension TagEntry {
     }
 
     @NSManaged public var id: UUID?
-    @NSManaged public var title: String?
     @NSManaged public var detail: String?
     @NSManaged public var startDate: Date?
     @NSManaged public var endDate: Date?
-    @NSManaged public var colorHex: String?
+    @NSManaged public var tag: Tag?
 }
 
 extension TagEntry: Identifiable {
 
     var wrappedID: UUID {
         id ?? UUID()
-    }
-
-    var wrappedTitle: String {
-        title ?? "Untitled"
     }
 
     var wrappedDetail: String {
@@ -49,10 +44,6 @@ extension TagEntry: Identifiable {
     var wrappedEnd: Date {
         endDate ?? Date()
     }
-
-    var wrappedColorHex: String {
-        colorHex ?? "#CCCCCC"
-    }
 }
 
 func createTagEntry(
@@ -65,11 +56,9 @@ func createTagEntry(
 ) {
     let newTag = TagEntry(context: context)
     newTag.id = UUID()
-    newTag.title = title
     newTag.detail = detail
     newTag.startDate = start
     newTag.endDate = end
-    newTag.colorHex = colorHex
 
     do {
         try context.save()

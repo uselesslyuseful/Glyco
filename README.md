@@ -9,7 +9,7 @@ created by contributors to that repository.
 The dataset is licensed under the Creative Commons Attribution 4.0 International License (CC BY 4.0):
 https://creativecommons.org/licenses/by/4.0/
 
-The data has been adapted and used for training a locally run machine learning predictive model.
+The data has been adapted, modified, and used for training a locally run machine learning predictive model.
 
 No endorsement by the original authors is implied.
 

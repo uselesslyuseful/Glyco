@@ -22,14 +22,15 @@ func glucoseAPICall(context: NSManagedObjectContext) {
     
     // create file
     let fileManager = FileManager.default
-    let fileURL: URL
+    var fileURL: URL
 
     do {
-        let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-        let fileURL = path.appendingPathComponent("GlucoseEntries.csv")
+        let path = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        fileURL = path.appendingPathComponent("GlucoseEntries.csv")
         try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
     } catch {
-        print("error creating file")
+        print("Error creating/writing file: \(error)")
+        return
     }
     
     // send to python backend
@@ -50,7 +51,13 @@ func glucoseAPICall(context: NSManagedObjectContext) {
                      forHTTPHeaderField: "Content-Type") // Set structure/framework of what will be sent
     
     var body = Data() // create data
-    let fileData = try! Data(contentsOf: fileURL) // file name + content
+    let fileData: Data
+    do {
+        fileData = try Data(contentsOf: fileURL)
+    } catch {
+        print("Error reading file data: \(error)")
+        return
+    }
     
     body.append("--\(boundary)\r\n".data(using: .utf8)!) // boundary data start
     body.append("Content-Disposition: form-data; name=\"file\"; filename=\"glucose.csv\"\r\n".data(using: .utf8)!) // header (file description)

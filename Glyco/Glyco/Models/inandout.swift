@@ -7,7 +7,7 @@
 import Foundation
 import CoreData
 
-func glucoseAPICall(context: NSManagedObjectContext, fileURL: URL) {
+func glucoseAPICall(context: NSManagedObjectContext) {
     let gEntries = fetchGlucoseEntries(with: context).sorted { ($0.date ?? Date()) < ($1.date ?? Date()) }
     
     let formatter = DateFormatter()
@@ -22,6 +22,8 @@ func glucoseAPICall(context: NSManagedObjectContext, fileURL: URL) {
     
     // create file
     let fileManager = FileManager.default
+    let fileURL: URL
+
     do {
         let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
         let fileURL = path.appendingPathComponent("GlucoseEntries.csv")

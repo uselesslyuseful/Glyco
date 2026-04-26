@@ -21,55 +21,46 @@ func glucoseAPICall(context: NSManagedObjectContext) {
     }
     
     // create file
-    let fileManager = FileManager.default
-    var fileURL: URL
+//    let fileManager = FileManager.default
 
-    do {
-        let path = try fileManager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-        fileURL = path.appendingPathComponent("GlucoseEntries.csv")
-        try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
-    } catch {
-        print("Error creating/writing file: \(error)")
-        return
-    }
-    
-    // send to python backend
-    
-    let url = URL(string: "http://127.0.0.1:8000/predict")!
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-        //    STRUCTURE:
-        //    POST /predict
-        //    Content-Type: multipart/form-data; boundary=XYZ
-        //
-        //    --XYZ (separator)
-        //    (file metadata)
-        //    (file content)
-        //    --XYZ-- (separator)
-    let boundary = UUID().uuidString // separator string (ex: multipart data separated by 'xxx')
-    request.setValue("multipart/form-data; boundary=\(boundary)",
-                     forHTTPHeaderField: "Content-Type") // Set structure/framework of what will be sent
-    
-    var body = Data() // create data
-    let fileData: Data
-    do {
-        fileData = try Data(contentsOf: fileURL)
-    } catch {
-        print("Error reading file data: \(error)")
-        return
-    }
-    
-    body.append("--\(boundary)\r\n".data(using: .utf8)!) // boundary data start
-    body.append("Content-Disposition: form-data; name=\"file\"; filename=\"glucose.csv\"\r\n".data(using: .utf8)!) // header (file description)
-    body.append("Content-Type: text/csv\r\n\r\n".data(using: .utf8)!) // file type + end header
-    body.append(fileData) // add data
-    body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!) // boundary data end // close request
-    // all this data is in binary
+//    do {
+//        let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+//        let fileURL = path.appendingPathComponent("GlucoseEntries.csv")
+//        try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
+//        
+//        // send to python backend
+//        
+        let url = URL(string: "http://127.0.0.1:8000/predict")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+            //    STRUCTURE:
+            //    POST /predict
+            //    Content-Type: multipart/form-data; boundary=XYZ
+            //
+            //    --XYZ (separator)
+            //    (file metadata)
+            //    (file content)
+            //    --XYZ-- (separator)
+        let boundary = UUID().uuidString // separator string (ex: multipart data separated by 'xxx')
+        request.setValue("multipart/form-data; boundary=\(boundary)",
+                         forHTTPHeaderField: "Content-Type") // Set structure/framework of what will be sent
+        
+        var body = Data() // create data
+        let fileData = csvString.data(using: .utf8)!
+        body.append("--\(boundary)\r\n".data(using: .utf8)!) // boundary data start
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"glucose.csv\"\r\n".data(using: .utf8)!) // header (file description)
+        body.append("Content-Type: text/csv\r\n\r\n".data(using: .utf8)!) // file type + end header
+        body.append(fileData) // add data
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!) // boundary data end // close request
+        // all this data is in binary
 
-    URLSession.shared.uploadTask(with: request, from: body) //send data
-    { data, _, error in // when python sends data back (callback)
-        if let data = data { // check if data exists
-            print(String(data: data, encoding: .utf8)!) // print return for now (converts back from binary)
-        }
-    }.resume() // starts request
+        URLSession.shared.uploadTask(with: request, from: body) //send data
+        { data, _, error in // when python sends data back (callback)
+            if let data = data { // check if data exists
+                print(String(data: data, encoding: .utf8)!) // print return for now (converts back from binary)
+            }
+        }.resume() // starts request
+//    } catch {
+//        print("error creating file")
+//    }
 }

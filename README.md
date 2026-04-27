@@ -1,6 +1,9 @@
 # Glyco
 A blood sugar tracker made for iOS 16. Currently in progress.
 
+# Glyco's Glucose Prediction Model Server
+https://github.com/VinnieDophey/glucoseml
+
 # Data Attribution
 This project uses data from the Manchester CS Coordinated Diabetes Study dataset
 (https://github.com/sharpic/ManchesterCSCoordinatedDiabetesStudy),

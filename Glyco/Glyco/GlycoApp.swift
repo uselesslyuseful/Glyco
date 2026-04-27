@@ -16,6 +16,7 @@ struct GlycoApp: App {
     @StateObject private var graphVM = GraphViewModel()
     @StateObject private var trendVM = TrendViewModel()
     @StateObject private var userData = UserData()
+    @StateObject private var predictionVM = PredictionViewModel()
     @StateObject private var autoFetchVM: AutoFetchViewModel
     
     init() {
@@ -53,6 +54,7 @@ struct GlycoApp: App {
                 .environmentObject(graphVM)
                 .environmentObject(trendVM)
                 .environmentObject(userData)
+                .environmentObject(predictionVM)
                 .environmentObject(autoFetchVM)
         }
 

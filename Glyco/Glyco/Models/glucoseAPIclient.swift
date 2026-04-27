@@ -12,13 +12,13 @@ struct PredictionResponse: Decodable {
 }
 
 struct Prediction: Decodable, Identifiable {
-    let timestamp: String
+    let timestamp: Date
     let glucose: Double
 
-    var id: String { timestamp }
+    var id: Date { timestamp }
 }
 
-func glucoseAPICall(context: NSManagedObjectContext) async {
+func glucoseAPICall(context: NSManagedObjectContext) async throws -> [Prediction]{
     let gEntries = fetchGlucoseEntries(with: context).sorted { ($0.date ?? Date()) < ($1.date ?? Date()) }
     
     let formatter = DateFormatter()
@@ -67,14 +67,17 @@ func glucoseAPICall(context: NSManagedObjectContext) async {
     do{
         let (data, _) = try await URLSession.shared.upload(for: request, from: body)
         
-        let decoded = try JSONDecoder().decode(PredictionResponse.self, from: data)
         
-        await MainActor.run {
-            print(decoded.predictions)
-        }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let decoded = try decoder.decode(PredictionResponse.self, from: data)
+        
+        print(decoded.predictions)
+        return decoded.predictions
     }
     catch{
         print("glucoseAPIthing failed", error)
+        return []
     }
 //    } catch {
 //        print("error creating file")

@@ -16,7 +16,7 @@ struct ContentView: View {
     @EnvironmentObject var ivm: InsightsViewModel
     @EnvironmentObject var gvm: GraphViewModel
     @EnvironmentObject var dexcom: DexcomClient
-
+    @EnvironmentObject var pvm: PredictionViewModel
     @Environment(\.managedObjectContext) private var viewContext
     
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
@@ -107,7 +107,7 @@ struct ContentView: View {
                 }
                 Button(action: {
                     Task {
-                        await glucoseAPICall(context: viewContext)
+                        await pvm.predictGlucose(context: viewContext)
                     }
                 }) {
                     Label("Hello Python!!", systemImage: "phone.connection")

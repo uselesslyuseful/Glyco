@@ -294,4 +294,3 @@ struct Infobar: View {
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
 }
-

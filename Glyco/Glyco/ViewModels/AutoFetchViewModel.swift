@@ -11,7 +11,7 @@ import CoreData
 
 class AutoFetchViewModel: ObservableObject {
     @Published var secondsUntilNextFetch: Int = 0
-    @Published var isAutoFetchActive: Bool = false
+    @Published var isAutoFetchActive: Bool = true
     
     private var timer: Timer?
     private var countdownTimer: Timer?
@@ -38,16 +38,16 @@ class AutoFetchViewModel: ObservableObject {
 
     func startAutoFetch() {
         isAutoFetchActive = true
-        secondsUntilNextFetch = 300
+        secondsUntilNextFetch = 120
 
         timer?.invalidate()
         countdownTimer?.invalidate()
 
-        timer = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 120, repeats: true) { _ in
             Task {
                 await self.runFetch()
                 await MainActor.run {
-                    self.secondsUntilNextFetch = 300
+                    self.secondsUntilNextFetch = 120
                 }
             }
         }
@@ -71,7 +71,7 @@ class AutoFetchViewModel: ObservableObject {
     }
 
     func resetCountdown() {
-        secondsUntilNextFetch = 300
+        secondsUntilNextFetch = 120
     }
     
     func runFetch() async {

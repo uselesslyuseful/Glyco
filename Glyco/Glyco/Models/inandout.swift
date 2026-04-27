@@ -54,8 +54,8 @@ func glucoseAPICall(context: NSManagedObjectContext) {
         body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!) // boundary data end // close request
         // all this data is in binary
 
-        URLSession.shared.uploadTask(with: request, from: body) //send data
-        { data, _, error in // when python sends data back (callback)
+        URLSession.shared.uploadTask(with: request, from: body) { // send data
+            data, _, error in // when python sends data back (callback)
             if let data = data { // check if data exists
                 print(String(data: data, encoding: .utf8)!) // print return for now (converts back from binary)
             }

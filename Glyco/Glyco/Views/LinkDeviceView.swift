@@ -7,7 +7,6 @@
 import SwiftUI
 
 struct LinkDeviceButton: View {
-    
     let label: String
     
     var body: some View {
@@ -29,6 +28,7 @@ struct LinkDeviceButton: View {
 struct LinkDeviceView: View {
     @EnvironmentObject var dexcom: DexcomClient
     @EnvironmentObject var vm: InsightsViewModel
+    @EnvironmentObject var afvm: AutoFetchViewModel
     @Environment(\.managedObjectContext) private var viewContext
     var body: some View {
         Divider()
@@ -58,6 +58,35 @@ struct LinkDeviceView: View {
                 }
                 .padding(10)
                 Spacer().frame(height: 60)
+                HStack {
+                    if afvm.isAutoFetchActive {
+                        if afvm.secondsUntilNextFetch > 0 {
+                            Text("Next update in \(formattedTime(afvm.secondsUntilNextFetch))")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            Text("Updating…")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Text("Auto-fetch paused")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    if afvm.isAutoFetchActive {
+                        Button("Stop") {
+                            afvm.stopAutoFetch()
+                        }
+                        .buttonStyle(.bordered)
+                    } else {
+                        Button("Start") {
+                            afvm.startAutoFetch()
+                        }
+                        .buttonStyle(.borderedProminent)
+                    }
+                }
             }
             .padding(20)
             Spacer()
@@ -65,6 +94,11 @@ struct LinkDeviceView: View {
         .padding()
         .navigationTitle("Link Device")
         .navigationBarTitleDisplayMode(.inline)
+    }
+    private func formattedTime(_ seconds: Int) -> String {
+        let minutes = seconds / 60
+        let secs = seconds % 60
+        return String(format: "%02d:%02d", minutes, secs)
     }
 }
 

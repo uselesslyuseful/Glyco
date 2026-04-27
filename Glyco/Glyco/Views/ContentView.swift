@@ -98,22 +98,6 @@ struct ContentView: View {
                 SecondBloodGlucoseStatisticsView()
                     .frame(width: UIScreen.main.bounds.width * 0.95)
                 
-                NavigationLink {
-                    MeetingView()
-                } label: {
-                    HStack {
-                        Image(systemName: "waveform.path.ecg")
-                        Text("Dexcom Data")
-                            .fontWeight(.semibold)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
-                    }
-                    .padding()
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-                }
-                .frame(width: UIScreen.main.bounds.width * 0.95)
-                .padding(.bottom, 8)
                 Button(action: {
                     addEntry(glucoseValue: 5, dateEntered: Date(), context: viewContext)
                     ivm.loadStats(context: viewContext)

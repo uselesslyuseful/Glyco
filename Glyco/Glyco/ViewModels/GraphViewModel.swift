@@ -12,6 +12,7 @@ import CoreData
 class GraphViewModel: ObservableObject {
     @Published var filteredList: [GlucoseEntry] = []
     @Published var dateL: Date = Date().addingTimeInterval(-24*60*60)
+    @Published var predStart: Date = Date()
 
     func loadStats(context: NSManagedObjectContext) {
         let glucose = fetchGlucoseEntries(with: context)
@@ -26,6 +27,7 @@ class GraphViewModel: ObservableObject {
             }
         }
         filteredList = filteredList.sorted { ($0.date ?? Date()) < ($1.date ?? Date()) } // latest at end
+        predStart = filteredList.last?.date ?? Date()
 
     }
 }

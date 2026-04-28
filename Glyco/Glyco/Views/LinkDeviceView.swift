@@ -29,6 +29,7 @@ struct LinkDeviceView: View {
     @EnvironmentObject var dexcom: DexcomClient
     @EnvironmentObject var vm: InsightsViewModel
     @EnvironmentObject var afvm: AutoFetchViewModel
+    @EnvironmentObject var pvm: PredictionViewModel
     @Environment(\.managedObjectContext) private var viewContext
     var body: some View {
         Divider()
@@ -51,7 +52,7 @@ struct LinkDeviceView: View {
                             }
                         } else {
                             dexcom.login()
-                        }
+                        } // tehres a video on how steam is the only monopoly who isnt fking the consumer
                     }
                 } label: {
                     LinkDeviceButton(label: dexcom.isAuthenticated ? "Sync Dexcom Data" : "Connect Dexcom")

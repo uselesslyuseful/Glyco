@@ -23,6 +23,7 @@ func glucoseAPICall(context: NSManagedObjectContext) async throws -> [Prediction
     
     let formatter = DateFormatter()
     formatter.dateFormat = "dd/MM/yyyy HH:mm"
+    formatter.timeZone = TimeZone(identifier: "UTC")
     
     var csvString = "Timestamp,Glucose\n" //header
     for g in gEntries {
@@ -31,26 +32,26 @@ func glucoseAPICall(context: NSManagedObjectContext) async throws -> [Prediction
         csvString += "\(timestamp),\(mgdl)\n" //add each row as entry
     }
     // create file
-//    let fileManager = FileManager.default
-
-//    do {
-//        let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
-//        let fileURL = path.appendingPathComponent("GlucoseEntries.csv")
-//        try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
-//        
-//        // send to python backend
-//        
+    //    let fileManager = FileManager.default
+    
+    //    do {
+    //        let path = try fileManager.url(for: .documentDirectory, in: .allDomainsMask, appropriateFor: nil, create: false)
+    //        let fileURL = path.appendingPathComponent("GlucoseEntries.csv")
+    //        try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
+    //
+    //        // send to python backend
+    //
     let url = URL(string: "https://glyco-glucoseapiserver.onrender.com/predict")!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
-        //    STRUCTURE:
-        //    POST /predict
-        //    Content-Type: multipart/form-data; boundary=XYZ
-        //
-        //    --XYZ (separator)
-        //    (file metadata)
-        //    (file content)
-        //    --XYZ-- (separator)
+    //    STRUCTURE:
+    //    POST /predict
+    //    Content-Type: multipart/form-data; boundary=XYZ
+    //
+    //    --XYZ (separator)
+    //    (file metadata)
+    //    (file content)
+    //    --XYZ-- (separator)
     let boundary = UUID().uuidString // separator string (ex: multipart data separated by 'xxx')
     request.setValue("multipart/form-data; boundary=\(boundary)",
                      forHTTPHeaderField: "Content-Type") // Set structure/framework of what will be sent
@@ -63,7 +64,7 @@ func glucoseAPICall(context: NSManagedObjectContext) async throws -> [Prediction
     body.append(fileData) // add data
     body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!) // boundary data end // close request
     // all this data is in binary
-
+    
     do{
         let (data, _) = try await URLSession.shared.upload(for: request, from: body)
         
@@ -79,7 +80,7 @@ func glucoseAPICall(context: NSManagedObjectContext) async throws -> [Prediction
         print("glucoseAPIthing failed", error)
         return []
     }
-//    } catch {
-//        print("error creating file")
-//    }
+    //    } catch {
+    //        print("error creating file")
+    //    } 
 }

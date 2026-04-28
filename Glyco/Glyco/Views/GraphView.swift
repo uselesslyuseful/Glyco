@@ -12,6 +12,7 @@ import Charts
 struct SecondBloodGlucoseStatisticsView: View {
     @EnvironmentObject var gvm: GraphViewModel
     @EnvironmentObject var tvm: TrendViewModel
+    @EnvironmentObject var pvm: PredictionViewModel //COOKED
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
@@ -105,7 +106,37 @@ struct SecondBloodGlucoseStatisticsView: View {
             accentColor: tvm.accent ?? .accentColor
         )
         .frame(width: UIScreen.main.bounds.width * 0.95)
+        
+        VStack(alignment: .leading) {
+            
+            HStack {
+                
+                // Add the blue icon with 3 bars here
+                
+                Text("Predicted Glucose Levels")
+                    .font(.headline)
+                    .padding(.leading, 8)
+                
+                Spacer()
+            }
+            PredictionGraph()
+                .onAppear{
+                    Task {
+                        await pvm.predictGlucose(context: viewContext)
+                    }
+                }
+            
+
+        }
+        .tint(.black)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 10)
+        .background(Color(.systemGray6))
+        .cornerRadius(20)
+        .frame(width: UIScreen.main.bounds.width * 0.95)
+        
     }
+    
     
 }
 
@@ -258,7 +289,7 @@ struct Infobar: View {
             Text(title)
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundColor(.primary)
-
+            
             Spacer()
 
             HStack(spacing: 6) {
@@ -293,4 +324,104 @@ struct Infobar: View {
         .frame(maxWidth: .infinity, minHeight: 50)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
     }
+}
+struct PredictionGraph: View {
+    @EnvironmentObject var pvm: PredictionViewModel
+    @EnvironmentObject var ivm: InsightsViewModel
+    @EnvironmentObject var gvm: GraphViewModel
+    
+    @AppStorage("highLimit") var highThreshold: Double = 10.0
+    @AppStorage("lowLimit") var lowThreshold: Double = 3.9
+    
+    var body: some View {
+        Chart {
+            ForEach(pvm.predictionList, id: \.id) { prediction in
+                LineMark(
+                    x: .value("Time", prediction.timestamp),
+                    y: .value("Level", prediction.glucose)
+                )
+                .foregroundStyle(.orange)
+                .lineStyle(StrokeStyle(lineWidth: 3))
+            }
+            
+            if let latest = gvm.filteredList.last, let date = latest.date {
+                PointMark(
+                    x: .value("Time", date),
+                    y: .value("Level", latest.value)
+                )
+                .foregroundStyle(.blue)
+                .symbolSize(50)
+                
+                // Line to connect first dot
+                if let firstPred = pvm.predictionList.first {
+                    LineMark(
+                        x: .value("Time", date),
+                        y: .value("Level", latest.value),
+                        series: .value("Series", "connector")
+                    )
+                    .foregroundStyle(.orange)
+                    .lineStyle(StrokeStyle(lineWidth: 3))
+                    
+                    LineMark(
+                        x: .value("Time", firstPred.timestamp),
+                        y: .value("Level", firstPred.glucose),
+                        series: .value("Series", "connector")
+                    )
+                    .foregroundStyle(.orange)
+                    .lineStyle(StrokeStyle(lineWidth: 3))
+
+                }
+            }
+            RuleMark(y: .value("High", highThreshold))
+                .foregroundStyle(.red.opacity(0.5))
+                .lineStyle(StrokeStyle(lineWidth: 1))
+            
+            RuleMark(y: .value("Low", lowThreshold))
+                .foregroundStyle(.red.opacity(0.5))
+                .lineStyle(StrokeStyle(lineWidth: 1))
+
+            RuleMark(y: .value("Average", ivm.averagemmol))
+                .foregroundStyle(.teal.opacity(0.5))
+                .lineStyle(StrokeStyle(lineWidth: 1))
+        }
+        .chartYAxis {
+            AxisMarks(position: .leading)
+        }
+        .chartXScale(domain: gvm.predStart...gvm.predStart.addingTimeInterval(3600))
+        .chartXAxis {
+            AxisMarks(values: [
+                gvm.predStart,
+                gvm.predStart.addingTimeInterval(15 * 60),
+                gvm.predStart.addingTimeInterval(30 * 60),
+                gvm.predStart.addingTimeInterval(45 * 60),
+                gvm.predStart.addingTimeInterval(60 * 60)
+            ]) { value in
+                AxisGridLine()
+                AxisTick()
+
+                AxisValueLabel {
+                    if let date = value.as(Date.self) {
+                        let mins = Int(date.timeIntervalSince(gvm.predStart) / 60)
+
+                        switch mins {
+                        case ..<5:
+                            Text("0")
+                        case 0..<20:
+                            Text("15m")
+                        case 20..<35:
+                            Text("30m")
+                        case 35..<50:
+                            Text("45m")
+                        default:
+                            Text("1h")
+                        }
+                    }
+                }
+                .font(.system(size: 9))
+            }
+        }
+        .aspectRatio(1, contentMode: .fit)
+        
+    }
+    
 }

@@ -21,19 +21,22 @@ class AutoFetchViewModel: ObservableObject {
     private let ivm: InsightsViewModel
     private let gvm: GraphViewModel
     private let tvm: TrendViewModel
+    private let pvm: PredictionViewModel
 
     init(
         dexcom: DexcomClient,
         context: NSManagedObjectContext,
         ivm: InsightsViewModel,
         gvm: GraphViewModel,
-        tvm: TrendViewModel
+        tvm: TrendViewModel,
+        pvm: PredictionViewModel
     ) {
         self.dexcom = dexcom
         self.context = context
         self.ivm = ivm
         self.gvm = gvm
         self.tvm = tvm
+        self.pvm = pvm
     }
 
     func startAutoFetch() {
@@ -82,6 +85,9 @@ class AutoFetchViewModel: ObservableObject {
             ivm.loadStats(context: context)
             gvm.loadStats(context: context)
             tvm.loadStats(context: context)
+            Task {
+                await pvm.predictGlucose(context: context)
+            }
         }
     }
 }

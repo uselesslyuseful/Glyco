@@ -105,15 +105,6 @@ struct ContentView: View {
                 }) {
                     Label("Dexcom Down - Add sample data at 'now'", systemImage: "plus.circle")
                 }
-                Button(action: {
-                    Task {
-                        await pvm.predictGlucose(context: viewContext)
-                    }
-                }) {
-                    Label("Hello Python!!", systemImage: "phone.connection")
-                }
-                .padding(.top, 8)
-
             }
             .navigationTitle("Glyco Dashboard") // Title of the page
             .toolbar{

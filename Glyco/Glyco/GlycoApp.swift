@@ -26,11 +26,14 @@ struct GlycoApp: App {
         let insightsVM = InsightsViewModel()
         let graphVM = GraphViewModel()
         let trendVM = TrendViewModel()
+        let predictionVM = PredictionViewModel()
 
         _dexcom = StateObject(wrappedValue: dexcom)
         _insightsVM = StateObject(wrappedValue: insightsVM)
         _graphVM = StateObject(wrappedValue: graphVM)
         _trendVM = StateObject(wrappedValue: trendVM)
+        _predictionVM = StateObject(wrappedValue: predictionVM)
+        
 
         let context = persistenceController.container.viewContext
 
@@ -40,7 +43,8 @@ struct GlycoApp: App {
                 context: context,
                 ivm: insightsVM,
                 gvm: graphVM,
-                tvm: trendVM
+                tvm: trendVM,
+                pvm: predictionVM
             )
         )
     }

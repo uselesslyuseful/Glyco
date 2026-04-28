@@ -11,7 +11,7 @@ import CoreData
 
 class AutoFetchViewModel: ObservableObject {
     @Published var secondsUntilNextFetch: Int = 0
-    @Published var isAutoFetchActive: Bool = true
+    @Published var isAutoFetchActive: Bool = false
     
     private var timer: Timer?
     private var countdownTimer: Timer?
@@ -22,6 +22,7 @@ class AutoFetchViewModel: ObservableObject {
     private let gvm: GraphViewModel
     private let tvm: TrendViewModel
     private let pvm: PredictionViewModel
+    
 
     init(
         dexcom: DexcomClient,
@@ -41,16 +42,16 @@ class AutoFetchViewModel: ObservableObject {
 
     func startAutoFetch() {
         isAutoFetchActive = true
-        secondsUntilNextFetch = 120
+        secondsUntilNextFetch = 30
 
         timer?.invalidate()
         countdownTimer?.invalidate()
 
-        timer = Timer.scheduledTimer(withTimeInterval: 120, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { _ in
             Task {
                 await self.runFetch()
                 await MainActor.run {
-                    self.secondsUntilNextFetch = 120
+                    self.secondsUntilNextFetch = 30
                 }
             }
         }
@@ -74,7 +75,7 @@ class AutoFetchViewModel: ObservableObject {
     }
 
     func resetCountdown() {
-        secondsUntilNextFetch = 120
+        secondsUntilNextFetch = 30
     }
     
     func runFetch() async {

@@ -17,6 +17,7 @@ struct ContentView: View {
     @EnvironmentObject var gvm: GraphViewModel
     @EnvironmentObject var dexcom: DexcomClient
     @EnvironmentObject var pvm: PredictionViewModel
+    @EnvironmentObject var afvm: AutoFetchViewModel
     @Environment(\.managedObjectContext) private var viewContext
     
     @State private var insightRangeText = "1 Day" // ALSO DEFAULT VALUE HEREE
@@ -122,6 +123,9 @@ struct ContentView: View {
             // TIME RANGE PICKER
             .onAppear {
                 ivm.loadStats(context: viewContext)
+                if afvm.isAutoFetchActive == false {
+                    afvm.startAutoFetch()
+                }
             }
             .sheet(isPresented: $isShowingRangePicker) {
                 VStack(spacing: 24) {

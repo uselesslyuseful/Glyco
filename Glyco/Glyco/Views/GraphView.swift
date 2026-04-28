@@ -117,6 +117,10 @@ struct SecondBloodGlucoseStatisticsView: View {
                     .font(.headline)
                     .padding(.leading, 8)
                 
+                if pvm.isLoading{
+                    ProgressView()
+                        .scaleEffect(0.7)   
+                }
                 Spacer()
             }
             PredictionGraph()

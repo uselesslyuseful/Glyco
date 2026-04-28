@@ -40,7 +40,7 @@ func glucoseAPICall(context: NSManagedObjectContext) async throws -> [Prediction
 //        
 //        // send to python backend
 //        
-    let url = URL(string: "http://127.0.0.1:8000/predict")!
+    let url = URL(string: "https://glyco-glucoseapiserver.onrender.com/predict")!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
         //    STRUCTURE:

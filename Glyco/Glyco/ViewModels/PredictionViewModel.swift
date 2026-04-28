@@ -11,14 +11,24 @@ import CoreData
 
 class PredictionViewModel: ObservableObject {
     @Published var predictionList: [Prediction] = []
+    @Published var isLoading: Bool = false
 
     
     func predictGlucose(context: NSManagedObjectContext) async {
+        await MainActor.run {
+                self.isLoading = true
+            }
         do {
             let result = try await glucoseAPICall(context: context)
-            self.predictionList = result
+            await MainActor.run {
+                self.predictionList = result
+                self.isLoading = false
+            }
 
         } catch {
+            await MainActor.run {
+                self.isLoading = false
+            }
             print("Prediction failed:", error)
         }
     }

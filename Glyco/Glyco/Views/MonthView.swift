@@ -39,6 +39,7 @@ struct MonthView: View {
                             onSelectWeek(selectedDate)
                         }
                         .id(offset)
+                        .id(selectedTags)
                     }
                 }
                 .padding()

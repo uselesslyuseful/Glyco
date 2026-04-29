@@ -12,7 +12,9 @@ extension Tag {
     @NSManaged public var id: UUID?
     @NSManaged public var title: String?
     @NSManaged public var colorHex: String?
+    @NSManaged public var category: String?
     @NSManaged public var entries: Set<TagEntry>?
+    @NSManaged public var isSystem: Bool
 }
 
 extension Tag: Identifiable {

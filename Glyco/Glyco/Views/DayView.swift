@@ -19,10 +19,12 @@ struct DayView: View {
 
     private let hourHeight: CGFloat = 60
     private let labelWidth: CGFloat = 50
-    private let lanePadding: CGFloat = 2   // gap between side-by-side lanes
+    private let lanePadding: CGFloat = 2
+    let selectedTags: Set<Tag>
 
-    init(selectedDate: Binding<Date>) {
-        _selectedDate = selectedDate
+    init(selectedDate: Binding<Date>, selectedTags: Set<Tag>) {
+        self._selectedDate = selectedDate
+        self.selectedTags = selectedTags
 
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: selectedDate.wrappedValue)
@@ -80,8 +82,18 @@ struct DayView: View {
                     // 2. Tag layer
                     GeometryReader { geo in
                         let columnWidth = geo.size.width - labelWidth
+                        let visibleTags = tags.filter { entry in
+                            guard let tag = entry.tag else { return false }
+
+                            if tag.isSystem {
+                                return selectedTags.contains(tag)
+                            } else {
+                                return true
+                            }
+                        }
+
                         let layouts = TagLayoutEngine.compute(
-                            tags: Array(tags),
+                            tags: Array(visibleTags),
                             day: selectedDate,
                             hourHeight: hourHeight
                         )

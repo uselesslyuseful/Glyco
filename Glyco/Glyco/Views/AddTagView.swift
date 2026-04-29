@@ -16,7 +16,8 @@ struct AddTagView: View {
     var selectedDate: Date
     
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.title, ascending: true)]
+        sortDescriptors: [NSSortDescriptor(keyPath: \Tag.title, ascending: true)],
+        predicate: NSPredicate(format: "isSystem == NO")
     ) private var tags: FetchedResults<Tag>
 
     @State private var selection: TagSelection?
@@ -24,12 +25,18 @@ struct AddTagView: View {
     
     @State private var detail = ""
     @State private var start: Date
-    init(selectedDate: Date) {
+    let preselectedTag: Tag?
+    let lockTagSelection: Bool
+    init(selectedDate: Date, preselectedTag: Tag? = nil, lockTagSelection: Bool = false) {
         self.selectedDate = selectedDate
+        self.preselectedTag = preselectedTag
+        self.lockTagSelection = lockTagSelection
+
         _start = State(initialValue: selectedDate)
         _end = State(initialValue: selectedDate.addingTimeInterval(3600))
     }
     @State private var end = Date().addingTimeInterval(3600)
+    
     
     enum TagSelection: Hashable {
         case existing(Tag)
@@ -40,21 +47,32 @@ struct AddTagView: View {
         NavigationStack {
             Form {
                 Section(header: Text("Tag")) {
-                    Picker("Select Tag", selection: $selection) {
-                        ForEach(tags) { tag in
-                            Text(tag.wrappedTitle).tag(TagSelection.existing(tag))
-                        }
-                        Text("+ New Tag").tag(TagSelection.new)
-                    }
-                    .pickerStyle(.menu)
-                    .onChange(of: selection) { value in
-                        if case .existing = value {
-                            newTagTitle = ""
-                        }
-                    }
 
-                    if case .new = selection {
-                        TextField("New tag name", text: $newTagTitle)
+                    if lockTagSelection, let tag = preselectedTag {
+                        HStack {
+                            Text(tag.wrappedTitle)
+                            Spacer()
+                            Text("Tracker Tag")
+                                .foregroundColor(.secondary)
+                        }
+
+                    } else {
+                        Picker("Select Tag", selection: $selection) {
+                            ForEach(tags) { tag in
+                                Text(tag.wrappedTitle).tag(TagSelection.existing(tag))
+                            }
+                            Text("+ New Tag").tag(TagSelection.new)
+                        }
+                        .pickerStyle(.menu)
+                        .onChange(of: selection) { value in
+                            if case .existing = value {
+                                newTagTitle = ""
+                            }
+                        }
+
+                        if case .new = selection {
+                            TextField("New tag name", text: $newTagTitle)
+                        }
                     }
                 }
 
@@ -74,7 +92,9 @@ struct AddTagView: View {
             }
             .navigationTitle("New Tag")
             .onAppear {
-                if selection == nil {
+                if let tag = preselectedTag {
+                    selection = .existing(tag)
+                } else if selection == nil {
                     if let first = tags.first {
                         selection = .existing(first)
                     } else {

@@ -1,3 +1,12 @@
+//
+//  TrackerView.swift
+//  Glyco
+//
+//  Created by Susan Zheng on 2026-04-29.
+//
+
+import SwiftUI
+
 struct TrackerView: View {
     @Environment(\.managedObjectContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -12,7 +21,11 @@ struct TrackerView: View {
             List {
                 ForEach(trackers) { tag in
                     NavigationLink {
-                        TrackerDetailView(tag: tag)
+                        AddTagView(
+                            selectedDate: Date(),
+                            preselectedTag: tag,
+                            lockTagSelection: true
+                        )
                     } label: {
                         HStack {
                             Circle()

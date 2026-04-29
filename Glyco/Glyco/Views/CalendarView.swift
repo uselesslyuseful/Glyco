@@ -1,5 +1,6 @@
 
 import SwiftUI
+import CoreData
 
 enum CalendarScreen {
     case month
@@ -17,6 +18,8 @@ struct CalendarView: View {
 
     @State private var selectedTags: Set<Tag> = []
     @State private var showingSortSheet = false
+    @Environment(\.managedObjectContext) private var context
+    @State private var showingTrackers = false
 
     var body: some View {
         VStack {
@@ -35,7 +38,10 @@ struct CalendarView: View {
                 }
 
             case .day(let date):
-                DayView(selectedDate: .constant(date))
+                DayView(
+                    selectedDate: .constant(date),
+                    selectedTags: selectedTags
+                )
             }
         }
         .navigationTitle("Calendar")
@@ -55,18 +61,52 @@ struct CalendarView: View {
                 }
             }
 
-            ToolbarItem(placement: .topBarTrailing) {
+            ToolbarItemGroup(placement: .topBarTrailing) {
                 Button("Sort") {
                     showingSortSheet = true
+                }
+
+                Button("Trackers") {
+                    showingTrackers = true
                 }
             }
         }
         .sheet(isPresented: $showingSortSheet) {
             TagFilterView(tags: allTags, selectedTags: $selectedTags)
         }
+        .sheet(isPresented: $showingTrackers) {
+            TrackerView()
+        }
+        .onAppear {
+            createDefaultTags(context: context)
+        }
     }
 
-    // MARK: - Logic
+    func createDefaultTags(context: NSManagedObjectContext) {
+        let request: NSFetchRequest<Tag> = Tag.fetchRequest()
+        request.predicate = NSPredicate(format: "isSystem == YES")
+
+        let existing = (try? context.fetch(request)) ?? []
+
+        if !existing.isEmpty { return }
+
+        let defaults = [
+            ("Menstrual Cycle", "#E57373"),
+            ("Stress", "#FFB74D"),
+            ("Exercise", "#FEFF00"),
+            ("Sleep", "#64B5F6"),
+        ]
+
+        for (name, color) in defaults {
+            let tag = Tag(context: context)
+            tag.id = UUID()
+            tag.title = name
+            tag.colorHex = color
+            tag.isSystem = true
+        }
+
+        try? context.save()
+    }
 
     private func handleBack() {
         switch screen {

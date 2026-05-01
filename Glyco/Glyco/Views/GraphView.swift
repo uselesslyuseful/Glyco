@@ -119,7 +119,7 @@ struct SecondBloodGlucoseStatisticsView: View {
                 
                 if pvm.isLoading{
                     ProgressView()
-                        .scaleEffect(0.7)   
+                        .scaleEffect(0.7)
                 }
                 Spacer()
             }
@@ -182,7 +182,7 @@ struct Graph: View {
                 .foregroundStyle(.red.opacity(0.5))
                 .lineStyle(StrokeStyle(lineWidth: 1))
 
-            RuleMark(y: .value("Average", ivm.averagemmol))
+            RuleMark(y: .value("Average", ivm.averagemmol ?? 0))
                 .foregroundStyle(.teal.opacity(0.5))
                 .lineStyle(StrokeStyle(lineWidth: 1))
         }
@@ -384,7 +384,7 @@ struct PredictionGraph: View {
                 .foregroundStyle(.red.opacity(0.5))
                 .lineStyle(StrokeStyle(lineWidth: 1))
 
-            RuleMark(y: .value("Average", ivm.averagemmol))
+            RuleMark(y: .value("Average", ivm.averagemmol ?? 0))
                 .foregroundStyle(.teal.opacity(0.5))
                 .lineStyle(StrokeStyle(lineWidth: 1))
         }

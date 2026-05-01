@@ -15,6 +15,7 @@ import CoreData
 struct ContentView: View {
     @EnvironmentObject var ivm: InsightsViewModel
     @EnvironmentObject var gvm: GraphViewModel
+    @EnvironmentObject var tvm: TrendViewModel
     @EnvironmentObject var dexcom: DexcomClient
     @EnvironmentObject var pvm: PredictionViewModel
     @EnvironmentObject var afvm: AutoFetchViewModel
@@ -65,26 +66,26 @@ struct ContentView: View {
                     ){
                         Infocard(
                             title: "Current",
-                            value1: "\(ivm.latestmmol)mmol/L",
+                            value1: ivm.latestmmol.map { String(format: "%.1f mmol/L", $0) } ?? "--",
                             value2: nil,
-                            altValue: "\(ivm.latestmgdl)mmol/Lmg/dL",
-                            systemImages: ["chart.bar.fill", "", "arrow.up.circle.fill"])
+                            altValue: ivm.latestmgdl.map { String(format: "%.1f mg/dL", $0) } ?? "--",
+                            systemImages: ["chart.bar.fill", "", tvm.icons[1]])
                         Infocard(
                             title: "Average",
-                            value1: "\(ivm.averagemmol)mmol/L",
+                            value1: ivm.averagemmol.map { String(format: "%.1f mmol/L", $0) } ?? "--",
                             value2: nil,
-                            altValue: "\(ivm.averagemgdl)mg/dL",
+                            altValue: ivm.averagemgdl.map { String(format: "%.1f mg/dL", $0) } ?? "--",
                             systemImages: ["chart.bar.fill"])
                         Infocard(
                             title: "Time in Range",
-                            value1: "\(ivm.percIn)%",
+                            value1: ivm.percIn.map { String(format: "%.1f %", $0) } ?? "--",
                             value2: nil,
                             altValue: nil,
                             systemImages: ["chart.bar.fill"])
                         Infocard(
                             title: "Time Out of Range",
-                            value1: "\(ivm.percHigh)%",
-                            value2: "\(ivm.percLow)%",
+                            value1: ivm.percHigh.map { String(format: "%.1f %", $0) } ?? "--",
+                            value2: ivm.percLow.map { String(format: "%.1f %", $0) } ?? "--",
                             altValue: nil,
                             systemImages: ["chart.bar.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }

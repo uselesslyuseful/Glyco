@@ -75,19 +75,19 @@ struct ContentView: View {
                             value1: ivm.averagemmol.map { String(format: "%.1f mmol/L", $0) } ?? "--",
                             value2: nil,
                             altValue: ivm.averagemgdl.map { String(format: "%.1f mg/dL", $0) } ?? "--",
-                            systemImages: ["chart.bar.fill"])
+                            systemImages: ["square.3.layers.3d.middle.filled"])
                         Infocard(
                             title: "Time in Range",
                             value1: ivm.percIn.map { String(format: "%.1f %", $0) } ?? "--",
                             value2: nil,
                             altValue: nil,
-                            systemImages: ["chart.bar.fill"])
+                            systemImages: ["chart.pie.fill"])
                         Infocard(
                             title: "Time Out of Range",
                             value1: ivm.percHigh.map { String(format: "%.1f %", $0) } ?? "--",
                             value2: ivm.percLow.map { String(format: "%.1f %", $0) } ?? "--",
                             altValue: nil,
-                            systemImages: ["chart.bar.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
+                            systemImages: ["chart.pie.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }
                     .padding(.top, 0)
                     .padding(.horizontal, 0)

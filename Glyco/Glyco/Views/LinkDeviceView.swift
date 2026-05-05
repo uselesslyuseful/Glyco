@@ -58,7 +58,15 @@ struct LinkDeviceView: View {
                     LinkDeviceButton(label: dexcom.isAuthenticated ? "Sync Dexcom Data" : "Connect Dexcom")
                 }
                 .padding(10)
-                Spacer().frame(height: 60)
+                
+                Button {
+                    Task {
+                        await pvm.predictGlucose(context: viewContext)
+                    }
+                } label: {
+                    LinkDeviceButton(label: "Refresh Predictions")
+                }
+                Spacer()
                 HStack {
                     if afvm.isAutoFetchActive {
                         if afvm.secondsUntilNextFetch > 0 {
@@ -90,11 +98,12 @@ struct LinkDeviceView: View {
                 }
             }
             .padding(20)
-            Spacer()
+            Spacer().frame(height: 60)
         }
         .padding()
         .navigationTitle("Link Device")
         .navigationBarTitleDisplayMode(.inline)
+
     }
     private func formattedTime(_ seconds: Int) -> String {
         let minutes = seconds / 60

@@ -57,7 +57,6 @@ struct DayView: View {
             ScrollView(.vertical) {
                 ZStack(alignment: .topLeading) {
 
-                    // 1. Hour grid (provides intrinsic height for the ZStack)
                     VStack(spacing: 0) {
                         ForEach(0..<24, id: \.self) { hour in
                             HStack(spacing: 0) {
@@ -79,7 +78,6 @@ struct DayView: View {
                         }
                     }
 
-                    // 2. Tag layer
                     GeometryReader { geo in
                         let columnWidth = geo.size.width - labelWidth
                         let visibleTags = tags.filter { entry in

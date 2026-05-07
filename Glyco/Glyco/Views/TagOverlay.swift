@@ -15,7 +15,6 @@ struct TagOverlay: View {
         let tag = info.tag
 
         ZStack(alignment: .topLeading) {
-            // Background block — full height
             RoundedRectangle(cornerRadius: 6)
                 .fill(Color(hex: tag.tag?.wrappedColorHex ?? "#CCCCCC").opacity(0.35))
                 .overlay(
@@ -23,7 +22,7 @@ struct TagOverlay: View {
                         .strokeBorder(Color(hex: tag.tag?.wrappedColorHex ?? "#CCCCCC").opacity(0.45), lineWidth: 1)
                 )
 
-            // Label — nudged down if it would collide with the tag above
+            // Label
             VStack(alignment: .leading, spacing: 2) {
                 Text(tag.tag?.wrappedTitle ?? "Untitled")
                     .font(.caption)
@@ -41,14 +40,12 @@ struct TagOverlay: View {
                     .opacity(0.7)
             }
             .padding(.horizontal, 5)
-            .padding(.top, 4 + info.textOffsetY)  // nudge applied here
+            .padding(.top, 4 + info.textOffsetY)
             .padding(.bottom, 4)
         }
         .frame(width: width, height: info.blockHeight)
         .offset(x: xOffset, y: info.topY)
     }
-
-    // MARK: - Helpers
 
     private var durationLabel: String {
         let components = Calendar.current.dateComponents(

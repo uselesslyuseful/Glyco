@@ -20,12 +20,44 @@ class DexcomClient: NSObject, ObservableObject {
     @Published var glucoseValues: [EGV] = []
 
     // MARK: - Config (replace these)
-    private let clientID = "fAOlRe2wItYjR1oM214c1DDSSwEHyI1N"
-    private let clientSecret = "9phw2eAhRFFQutmW"
     private let redirectURI = "https://uselesslyuseful.github.io/Glyco/"
+    
+    private var clientID: String {
+        switch environment {
+        case .production:
+            return "YOUR_PRODUCTION_CLIENT_ID"
+        case .sandbox:
+            return "fAOlRe2wItYjR1oM214c1DDSSwEHyI1N"
+        }
+    }
+
+    private var clientSecret: String {
+        switch environment {
+        case .production:
+            return "YOUR_PRODUCTION_CLIENT_SECRET"
+        case .sandbox:
+            return "9phw2eAhRFFQutmW"
+        }
+    }
 
     // MARK: - Tokens
     private var accessToken: String?
+    private let environment: DexcomEnvironment = .sandbox
+    // change to .sandbox when testing
+    
+    enum DexcomEnvironment {
+        case production
+        case sandbox
+
+        var baseURL: String {
+            switch self {
+            case .production:
+                return "https://api.dexcom.com"
+            case .sandbox:
+                return "https://sandbox-api.dexcom.com"
+            }
+        }
+    }
 
     // MARK: - OAuth login
     func login() {

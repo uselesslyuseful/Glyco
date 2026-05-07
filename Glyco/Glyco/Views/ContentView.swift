@@ -78,14 +78,14 @@ struct ContentView: View {
                             systemImages: ["square.3.layers.3d.middle.filled"])
                         Infocard(
                             title: "Time in Range",
-                            value1: ivm.percIn.map { String(format: "%.1f %", $0) } ?? "--",
+                            value1: ivm.percIn.map { String(format: "%.1f %%", $0) } ?? "--",
                             value2: nil,
                             altValue: nil,
                             systemImages: ["chart.pie.fill"])
                         Infocard(
                             title: "Time Out of Range",
-                            value1: ivm.percHigh.map { String(format: "%.1f %", $0) } ?? "--",
-                            value2: ivm.percLow.map { String(format: "%.1f %", $0) } ?? "--",
+                            value1: ivm.percHigh.map { String(format: "%.1f %%", $0) } ?? "--",
+                            value2: ivm.percLow.map { String(format: "%.1f %%", $0) } ?? "--",
                             altValue: nil,
                             systemImages: ["chart.pie.fill", "arrow.up.circle.fill", "", "arrow.down.circle.fill"])
                     }

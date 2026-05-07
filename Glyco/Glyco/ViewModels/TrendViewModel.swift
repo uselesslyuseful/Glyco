@@ -46,6 +46,12 @@ class TrendViewModel: ObservableObject {
             icons = ["arrow.up", "arrow.up.circle.fill"]
             rateText = "Rising Rapidly"
             accent = .red
+
+            NotificationManager.shared.sendGlucoseAlert(
+                title: "Glucose Rising Rapidly",
+                body: "Your glucose levels are increasing quickly."
+            )
+
         } else if rate >= 0.06 {
             icons = ["arrow.up.right", "arrow.up.right.circle.fill"]
             rateText = "Rising Moderately"
@@ -62,6 +68,11 @@ class TrendViewModel: ObservableObject {
             icons = ["arrow.down", "arrow.down.circle.fill"]
             rateText = "Falling Rapidly"
             accent = .red
+
+            NotificationManager.shared.sendGlucoseAlert(
+                title: "Glucose Falling Rapidly",
+                body: "Your glucose levels are decreasing quickly."
+            )
         }
     }
 }

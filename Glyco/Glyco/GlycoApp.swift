@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CoreData
+import UserNotifications
 
 @main
 struct GlycoApp: App {
@@ -33,6 +34,7 @@ struct GlycoApp: App {
         _graphVM = StateObject(wrappedValue: graphVM)
         _trendVM = StateObject(wrappedValue: trendVM)
         _predictionVM = StateObject(wrappedValue: predictionVM)
+        NotificationManager.shared.requestPermission()
         
 
         let context = persistenceController.container.viewContext

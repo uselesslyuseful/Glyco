@@ -100,13 +100,6 @@ struct ContentView: View {
                 SecondBloodGlucoseStatisticsView()
                     .frame(width: UIScreen.main.bounds.width * 0.95)
                 
-                Button(action: {
-                    addEntry(glucoseValue: 5, dateEntered: Date(), context: viewContext)
-                    ivm.loadStats(context: viewContext)
-                    gvm.loadStats(context: viewContext)
-                }) {
-                    Label("Dexcom Down - Add sample data at 'now'", systemImage: "plus.circle")
-                }
             }
             .navigationTitle("Glyco Dashboard") // Title of the page
             .toolbar{

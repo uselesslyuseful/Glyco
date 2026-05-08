@@ -25,7 +25,7 @@ class DexcomClient: NSObject, ObservableObject {
     private var clientID: String {
         switch environment {
         case .production:
-            return "YOUR_PRODUCTION_CLIENT_ID"
+            return "YOUR_PRODUCTION_CLIENT_ID" // currently no access, needs to request Dexcom permission with client credentials
         case .sandbox:
             return "fAOlRe2wItYjR1oM214c1DDSSwEHyI1N"
         }
@@ -34,7 +34,7 @@ class DexcomClient: NSObject, ObservableObject {
     private var clientSecret: String {
         switch environment {
         case .production:
-            return "YOUR_PRODUCTION_CLIENT_SECRET"
+            return "YOUR_PRODUCTION_CLIENT_SECRET" // ^
         case .sandbox:
             return "9phw2eAhRFFQutmW"
         }

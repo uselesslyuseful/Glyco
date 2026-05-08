@@ -5,6 +5,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct SettingsButton: View {
     
@@ -43,15 +44,21 @@ struct SettingsView: View {
                         .frame(width: 80, height: 80)
                         .clipShape(Circle())
                 } else {
-                    Circle()
-                        .fill(Color.blue.opacity(0.3))
-                        .frame(width: 80, height: 80)
+                    Image(systemName: "person.crop.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 80, height: 80)
+                                .foregroundColor(Color.gray.opacity(0.6))
+                    
                 }
                 
-                VStack(alignment: .leading) {
-                    Text("Name: \(userData.name.isEmpty ? "___" : userData.name)")
-                    Text("Age: \(userData.age.isEmpty ? "___" : userData.age)")
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Name: \(userData.name.isEmpty ? "" : userData.name)")
+                    Text("Age: \(userData.age.isEmpty ? "" : userData.age)")
                 }
+                .padding()
+                .background(Color(.systemGray6))
+                .cornerRadius(12)
             }
             .padding(.top, 20)
             
@@ -92,6 +99,6 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationStack {
             SettingsView()
         }
+        .environmentObject(UserData())
     }
 }
-

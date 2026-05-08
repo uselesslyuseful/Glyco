@@ -5,6 +5,14 @@
 //
 
 import SwiftUI
+import UIKit
+
+enum ActiveSheet: Identifiable {
+    case imagePicker
+    case terms
+    
+    var id: Int { hashValue }
+}
 
 struct ImagePicker: UIViewControllerRepresentable {
     
@@ -64,8 +72,7 @@ struct CustomField: View {
 struct AccountSettingsView: View {
     @EnvironmentObject var userData: UserData
     
-    @State private var showTerms = false
-    @State private var showImagePicker = false
+    @State private var activeSheet: ActiveSheet?
     var body: some View {
         VStack(spacing: 20) {
             
@@ -73,7 +80,7 @@ struct AccountSettingsView: View {
             
             // Profile
             Button {
-                showImagePicker = true
+                activeSheet = .imagePicker
             } label: {
                 if let image = userData.profileImage {
                     Image(uiImage: image)
@@ -82,28 +89,59 @@ struct AccountSettingsView: View {
                         .frame(width: 120, height: 120)
                         .clipShape(Circle())
                 } else {
-                    Circle()
-                        .fill(Color.blue.opacity(0.3))
-                        .frame(width: 120, height: 120)
+                    
+                    ZStack {
+                        Image(systemName: "person.crop.circle.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 150, height: 150)
+                                    .foregroundColor(Color.gray.opacity(0.6))
+
+                            }
                 }
             }
-            .sheet(isPresented: $showImagePicker) {
-                ImagePicker(image: $userData.profileImage)
-            }
+            
             
             // Fields
             Group {
                 CustomField(title: "Name", text: $userData.name)
+                    .onChange(of: userData.name) { newValue in
+                        
+                        // Allow only letters + spaces
+                        var filtered = newValue.filter { $0.isLetter || $0 == " " }
+                        
+                        // Ensure only ONE space exists
+                        let parts = filtered.split(separator: " ")
+                        if parts.count > 2 {
+                            filtered = parts.prefix(2).joined(separator: " ")
+                        }
+                        
+                        userData.name = filtered
+                    }
                 CustomField(title: "Age", text: $userData.age)
-                CustomField(title: "Email", text: $userData.email)
+                    .onChange(of: userData.age) { newValue in
+                        userData.age = newValue.filter { $0.isNumber }
+                    }
+                VStack(alignment: .leading) {
+                    CustomField(title: "Email", text: $userData.email)
+                    
+                    if !userData.email.isEmpty && !isValidEmail(userData.email) {
+                        Text("Invalid email format")
+                            .font(.caption)
+                            .foregroundColor(.red)
+                    }
+                }
                 CustomField(title: "Phone Number", text: $userData.phone)
+                    .onChange(of: userData.phone) { newValue in
+                        userData.phone = formatPhone(newValue)
+                    }
             }
             
             Spacer()
             
             // Terms & Conditions
             Button("Terms & Conditions") {
-                showTerms = true
+                activeSheet = .terms
             }
             .font(.footnote)
             
@@ -115,16 +153,40 @@ struct AccountSettingsView: View {
         .padding()
         .navigationTitle("Account Settings")
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $showTerms) {
-            TermsView()
+        .sheet(item: $activeSheet) { sheet in
+            switch sheet {
+            case .imagePicker:
+                ImagePicker(image: $userData.profileImage)
+            case .terms:
+                TermsView()
+            }
         }
+        }
+    func isValidEmail(_ email: String) -> Bool {
+        return email.contains("@") && email.contains(".com")
+    }
+    func formatPhone(_ input: String) -> String {
+        let numbers = input.filter { $0.isNumber }
+        let limited = String(numbers.prefix(10))
+        
+        var result = ""
+        
+        for (index, num) in limited.enumerated() {
+            if index == 3 || index == 6 {
+                result.append("-")
+            }
+            result.append(num)
+        }
+        
+        return result
+    }
     }
     
     struct AccountSettingsView_Previews: PreviewProvider {
         static var previews: some View {
             NavigationStack {
                 AccountSettingsView()
+                    .environmentObject(UserData())
             }
         }
     }
-}

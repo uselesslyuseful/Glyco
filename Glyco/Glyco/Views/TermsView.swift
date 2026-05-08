@@ -27,7 +27,11 @@ struct TermsView: View {
             
             ScrollView {
                 Text("""
-                LOTS OF TERMS AND CONDITIONS TEXT HERE
+                1. This Blood Glucose Tracker App is intended for personal, informational use only and is not a medical device. It does not provide medical advice, diagnosis, or treatment.
+                
+                2. All data entered is for tracking purposes and should not be used as a substitute for professional healthcare guidance.
+                
+                3. Users are responsible for how they use the app, and the developer is not liable for any decisions or outcomes resulting from its use.
                 """)
                 .padding()
             }

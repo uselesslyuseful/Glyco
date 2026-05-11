@@ -35,48 +35,6 @@ struct DataManagementView: View {
                     RoundedRectangle(cornerRadius: 25)
                         .stroke(Color.black, lineWidth: 1)
                 )
-                // iCloud Section
-                Text("Connect iCloud")
-                
-                Text("Current iCloud status: Connected")
-                    .font(.caption)
-                
-                Button("Connect") {}
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(25)
-                    .foregroundColor(.black)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25)
-                            .stroke(Color.black, lineWidth: 1)
-                    )
-                // Backup Section
-                Text("Backup data:")
-                
-                Button("Manual Backup") {}
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .foregroundColor(.black)
-                    .cornerRadius(25)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25)
-                            .stroke(Color.black, lineWidth: 1)
-                    )
-                // Toggle
-                Toggle("Automatic Cloud Backup", isOn: $autoBackup)
-                // Slider + Label
-                VStack {
-                    Text("Backup period: \(backupHours, specifier: "%.1f") hours")
-                        .font(.caption)
-                    Slider(
-                        value: $backupHours,
-                        in: 0.5...24,
-                        step: 1.5
-                    )
-                }
-                
                 Spacer()
             }
             .padding()

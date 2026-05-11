@@ -44,7 +44,7 @@ struct TimePicker: View {
     
     init(style: AnyShapeStyle = .init(.bar), weeks: Binding<Int>, days: Binding<Int>, hours: Binding<Int>) {
         self.style = style
-        self.units = [.hours, .days, .weeks]
+        self.units = [.weeks, .days, .hours]
         self._weeks = weeks
         self._days = days
         self._hours = hours
@@ -53,7 +53,7 @@ struct TimePicker: View {
 
     init(style: AnyShapeStyle = .init(.bar), minutes: Binding<Int>, hours: Binding<Int>, days: Binding<Int>) {
         self.style = style
-        self.units = [.minutes, .hours, .days]
+        self.units = [.days, .hours, .minutes]
         self._minutes = minutes
         self._hours = hours
         self._days = days
